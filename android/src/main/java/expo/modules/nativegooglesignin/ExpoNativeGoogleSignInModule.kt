@@ -1,5 +1,6 @@
 package expo.modules.nativegooglesignin
 
+import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -16,12 +17,14 @@ class ExpoNativeGoogleSignInModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("ExpoNativeGoogleSignIn")
 
-    AsyncFunction("signIn") { _: Map<String, Any?> ->
-      throw NotImplementedYetException("signIn")
+    // Promise-based overloads: a lambda that only throws has type `Nothing`, which Expo's reified
+    // AsyncFunction can't accept. L3's callback-based Credential Manager calls need promises anyway.
+    AsyncFunction("signIn") { _: Map<String, Any?>, promise: Promise ->
+      promise.reject(NotImplementedYetException("signIn"))
     }
 
-    AsyncFunction("signOut") {
-      throw NotImplementedYetException("signOut")
+    AsyncFunction("signOut") { promise: Promise ->
+      promise.reject(NotImplementedYetException("signOut"))
     }
   }
 }

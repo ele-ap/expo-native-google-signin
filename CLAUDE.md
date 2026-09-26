@@ -102,6 +102,13 @@ Example app — from `example/`:
 - **Semver.** Pre-1.0, a minor bump may break the API. Every release gets a `CHANGELOG.md` entry and
   is published from CI with npm provenance.
 - **Consumers pin exact versions** — say so in the README.
+- **Kotlin `AsyncFunction` bodies must not consist only of `throw`.** Such a lambda has type `Nothing`,
+  and Expo's `reified` `AsyncFunction` overloads fail to compile with it (`Cannot use 'Nothing' as reified
+  type parameter`). Take a trailing `promise: Promise` and call `promise.reject(...)` instead. Swift is
+  unaffected.
+- **iOS transitive pods that lack modules go in the podspec as direct dependencies.** Expo autolinking
+  enables modular headers only for a module's direct dependencies (see ARCHITECTURE.md → Platform
+  mechanics). Re-check this whenever the `GoogleSignIn` version changes.
 
 ---
 

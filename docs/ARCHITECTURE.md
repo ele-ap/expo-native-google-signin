@@ -49,6 +49,13 @@ each section; superseded decisions are marked, not deleted.
   `ExpoNativeGoogleSignInModule`) because `GoogleSignIn` is the iOS SDK's Swift module name.
 - **URL callback:** an `ExpoAppDelegateSubscriber` forwards `application(_:open:options:)` to
   `GIDSignIn.sharedInstance.handle(url)`.
+- **The podspec lists `GoogleUtilities` and `RecaptchaInterop` as direct dependencies (2026-09-26).**
+  GoogleSignIn 9 pulls in `AppCheckCore`, which CocoaPods treats as a Swift pod (it declares a
+  `swift_version`). Two of its dependencies don't define modules, so
+  `pod install` fails under Expo's default static-library Podfile. The first CI iOS run hit exactly
+  this. Expo autolinking enables modular headers only for the *direct* dependencies of a module pod.
+  Declaring the two pods directly, without versions, fixes it with no consumer Podfile changes and no
+  `useFrameworks` requirement. Re-check this list whenever the GoogleSignIn version changes.
 
 ## Public API shape (2026-09-26)
 
