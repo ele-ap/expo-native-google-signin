@@ -6,21 +6,22 @@
 locally, and CI compiles the example app natively (Android, plus iOS on Xcode 26). The full
 v0.1 API works end to end: `signIn`/`signOut` on **Android** (Credential Manager) and **iOS**
 (GoogleSignIn), JS validation, the Expo Go error, the `iosUrlScheme` config plugin and an example
-sign-in screen. What's left: docs, publishing and device validation.
+sign-in screen. What's left: publishing (L8) and device validation (L9), both with the maintainer.
 
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅, L2b (CI native
-compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅, L6 (`release.yml`) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
-where CI compiles Android and iOS on every push. Next step: **L7 — docs** (README, CHANGELOG, SECURITY),
-then L8 publishing, which needs the maintainer's npm account.
+compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅, L6 (`release.yml`) ✅, L7 (docs) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
+where CI compiles Android and iOS on every push. All code and docs for v0.1.0 are done. Next step: **L8 — publish
+`0.1.0-beta.0`**, which needs the maintainer: merge PR #1 to `main`, add the CHANGELOG date, then do the
+first publish (manual, or an `NPM_TOKEN` secret + tag `v0.1.0-beta.0`). See README → Contributing /
+releasing.
 
 ## Up next
 
-1. L7 docs (README, CHANGELOG, SECURITY).
-2. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
+1. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
    manual or via an `NPM_TOKEN` secret; trusted publishing is configured after the package exists).
-3. L9 validate in a real consumer app on both platforms → publish `0.1.0` (`latest`).
+2. L9 validate in a real consumer app on both platforms → publish `0.1.0` (`latest`).
 
 ## Completed
 
@@ -45,3 +46,6 @@ then L8 publishing, which needs the maintainer's npm account.
   (prereleases → `next`), after the tag/version and tag-on-`main` checks and the JS checks. It runs
   in the `npm` environment, uses no cache, and pins npm 11.20.0. Auth is trusted publishing (OIDC), or
   an `NPM_TOKEN` for the first publish.
+- **2026-09-26 — Docs (L7):** README (requirements, Google Cloud setup with both SHA-1s, API and error
+  table, Supabase nonce / Firebase / custom-server examples, migration, troubleshooting, releasing),
+  CHANGELOG (`0.1.0-beta.0`, date TBD at publish), SECURITY (GitHub private vulnerability reporting).

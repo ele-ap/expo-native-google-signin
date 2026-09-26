@@ -67,3 +67,10 @@ item is scheduled, move it into a real plan under `docs/plans/active/`.
   XCTest target yet.
 - **Action:** add a podspec `test_spec` (or a small SwiftPM test target) that CI runs on `macos-26`,
   covering cancel → cancelled, other errors → `SIGN_IN_FAILED`, and message preservation.
+
+### 9. Derive the Android Gradle version from `package.json`
+
+- **Why:** `android/build.gradle` hardcodes `version` / `versionName` (`0.1.0-beta.0`), while the iOS
+  podspec reads `package.json`. For now the README's release steps list the Gradle bump as manual.
+- **Action:** read the version from `../package.json` in `build.gradle` (as other Expo modules do) and
+  drop the manual step.
