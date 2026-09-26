@@ -52,3 +52,10 @@ item is scheduled, move it into a real plan under `docs/plans/active/`.
   `min_xcode_version_supported` (16.1 for RN 0.86, in `react-native/scripts/cocoapods/helpers.rb`)
   **and** Expo's Swift tools version (6.2 → Xcode 26, in `expo-modules-jsi/apple/Package.swift`).
   Do it together with backlog #1 if possible.
+
+### 7. Cancel an in-flight Android sign-in
+
+- **Why:** `signIn`/`signOut` create a `CancellationSignal` per call but never keep or cancel it, so a
+  sign-in started just before the Activity is destroyed runs to completion. This is harmless in v0.1.
+- **Action:** if needed, keep the signal and cancel it on Activity destroy (Expo `OnActivityDestroys`),
+  resolving `{ type: 'cancelled' }`.

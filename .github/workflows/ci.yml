@@ -111,6 +111,12 @@ jobs:
         # exists to prove.
         run: ./gradlew :app:assembleDebug -PreactNativeArchitectures=x86_64 --stacktrace
 
+      - name: Run Kotlin unit tests (ErrorMapping)
+        working-directory: example/android
+        # Autolinking names the module's Gradle project after the npm package
+        # (verified via `npx expo-modules-autolinking resolve`).
+        run: ./gradlew :expo-native-google-signin:testDebugUnitTest --stacktrace
+
   ios:
     name: iOS example (simulator build)
     runs-on: macos-26

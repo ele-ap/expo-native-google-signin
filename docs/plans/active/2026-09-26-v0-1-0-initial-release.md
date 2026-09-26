@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; next L2b (CI pulled forward), then L3 (Android)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward) and L3 (Android) done; next L4 (iOS)
 
 ## Objective
 
@@ -124,8 +124,9 @@ type SignInResult =
    `.github/workflows/ci.yml` now: the JS job (lint, typecheck, build, Jest), the example prebuild
    plus Android `assembleDebug` on ubuntu, and prebuild plus `pod install` plus a simulator
    `xcodebuild` on macOS. Work from a draft PR so every L3–L5 push is compiled natively. L6 keeps
-   the remaining tests, plugin tests and `release.yml`.
+   the remaining tests, plugin tests and `release.yml`. ✅ done 2026-09-26 (CI green on PR #1).
 3. **L3 — Android Kotlin + error mapping.** This is the actual deprecation fix, so it goes first.
+   ✅ done 2026-09-26: Credential Manager flow, `ErrorMapping.kt` and its JVM unit test (run in CI).
 4. **L4 — iOS Swift + AppDelegate subscriber.**
 5. **L5 — JS wrapper, web stub, config plugin.**
 6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
