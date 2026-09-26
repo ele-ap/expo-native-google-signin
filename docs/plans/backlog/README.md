@@ -42,3 +42,11 @@ item is scheduled, move it into a real plan under `docs/plans/active/`.
 
 - **Why:** apps must follow Google's branding guidelines; v0.1 ships no UI.
 - **Action:** optional; would need care around Google's branding rules. Low priority.
+
+### 6. CI macOS runner / Xcode pin
+
+- **Why:** `ci.yml` pins `macos-15` + `Xcode_16.4.app` to stay on Xcode 16/26 while GoogleSignIn is
+  pinned to 9.2 (10.x needs Xcode 27). GitHub will eventually deprecate the `macos-15` image.
+- **Action:** when moving runners, check the new image's default Xcode against React Native's
+  `min_xcode_version_supported` (16.1 for RN 0.86, in `react-native/scripts/cocoapods/helpers.rb`).
+  Do it together with backlog #1 if possible.

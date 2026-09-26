@@ -8,11 +8,12 @@ locally; native `signIn`/`signOut` are still stubs that reject with "not impleme
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅ done
-2026-09-26.** Next step: **L3 — Android** (Credential Manager `signIn`/`signOut` + `ErrorMapping.kt`).
+2026-09-26.** Next step: **L2b — CI native compiles, pulled forward** (draft PR), then **L3 — Android**
+(Credential Manager `signIn`/`signOut` + `ErrorMapping.kt`).
 
 ## Up next
 
-1. L3 Android (Credential Manager) → L4 iOS (`GoogleSignIn`) → L5 JS wrapper / web stub
+1. L2b CI compiles (draft PR) → L3 Android (Credential Manager) → L4 iOS (`GoogleSignIn`) → L5 JS wrapper / web stub
    / config plugin → L6 tests + CI (native compiles) → L7 docs.
 2. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
    manual or via an `NPM_TOKEN` secret; trusted publishing is configured after the package exists).

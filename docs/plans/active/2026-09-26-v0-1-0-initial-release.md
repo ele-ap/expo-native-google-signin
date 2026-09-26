@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; next L3 (Android)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; next L2b (CI pulled forward), then L3 (Android)
 
 ## Objective
 
@@ -120,10 +120,15 @@ type SignInResult =
 1. **L1 — Bootstrap:** AI-development docs, git and the public GitHub repo `ele-ap/expo-native-google-signin` ✅ done 2026-09-26.
 2. **L2 — Scaffold** from the template, then strip it down; finalise the Commands section of
    CLAUDE.md ✅ done 2026-09-26 (SDK 57).
+2b. **L2b — CI compiles, pulled forward from L6** (maintainer decision 2026-09-26). Add
+   `.github/workflows/ci.yml` now: the JS job (lint, typecheck, build, Jest), the example prebuild
+   plus Android `assembleDebug` on ubuntu, and prebuild plus `pod install` plus a simulator
+   `xcodebuild` on macOS. Work from a draft PR so every L3–L5 push is compiled natively. L6 keeps
+   the remaining tests, plugin tests and `release.yml`.
 3. **L3 — Android Kotlin + error mapping.** This is the actual deprecation fix, so it goes first.
 4. **L4 — iOS Swift + AppDelegate subscriber.**
 5. **L5 — JS wrapper, web stub, config plugin.**
-6. **L6 — Tests + CI.** Native compiles are proven here.
+6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
 7. **L7 — Docs:** README, CHANGELOG, SECURITY.
 8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag).
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
@@ -140,7 +145,7 @@ type SignInResult =
 - **CI (`ci.yml`, on PRs + `main`):**
   - lint, typecheck, build and Jest on ubuntu
   - example prebuild + `./gradlew :app:assembleDebug` on ubuntu (**compiles the Kotlin**)
-  - example prebuild + `pod install` + `xcodebuild` for the simulator on `macos-latest` (**compiles
+  - example prebuild + `pod install` + `xcodebuild` for the simulator on `macos-15` (Xcode 16.4 pinned; see `ci.yml`) (**compiles
     the Swift**)
 - **Maintainer device test** with the example app on both platforms:
   - sign in, cancel, the no-account case, sign out

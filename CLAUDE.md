@@ -91,8 +91,8 @@ Example app — from `example/`:
   `GoogleSignIn`
 - `example/` — Expo app for manual device testing; also what CI compiles natively. Depends on the
   module via `file:..` and reads client IDs from `EXPO_PUBLIC_*` env vars (`.env`, gitignored)
-- `.github/workflows/` — `ci.yml` (JS checks + Android/iOS example compiles), `release.yml` (npm
-  publish) — added in L6
+- `.github/workflows/` — `ci.yml` (JS checks + Android/iOS example compiles, on every PR and `main`;
+  added in L2b), `release.yml` (npm publish, added in L6)
 
 ## Conventions
 
