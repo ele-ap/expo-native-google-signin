@@ -55,8 +55,9 @@ jobs:
 
       - name: Test
         run: npm test
-      # `npm run test:plugin` is intentionally skipped: it exits 1 until plugin
-      # tests exist (see CLAUDE.md).
+
+      - name: Test plugin
+        run: npm run test:plugin
 
   android:
     name: Android example (assembleDebug)

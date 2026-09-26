@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android) and L4 (iOS) done; next L5 (JS + config plugin)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS) and L5 (JS + plugin) done; next L6 (`release.yml`)
 
 ## Objective
 
@@ -129,7 +129,9 @@ type SignInResult =
    ✅ done 2026-09-26: Credential Manager flow, `ErrorMapping.kt` and its JVM unit test (run in CI).
 4. **L4 — iOS Swift + AppDelegate subscriber.** ✅ done 2026-09-26: GoogleSignIn sign-in/out and
    `ErrorMapping.swift` (the AppDelegate URL forwarding dates from L2).
-5. **L5 — JS wrapper, web stub, config plugin.**
+5. **L5 — JS wrapper, web stub, config plugin.** ✅ done 2026-09-26: JS validation, Expo Go
+   error, `iosUrlScheme` → `CFBundleURLTypes`, the example sign-in screen, and the Jest + plugin tests
+   (pulled forward from L6; CI runs both).
 6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
 7. **L7 — Docs:** README, CHANGELOG, SECURITY.
 8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag).

@@ -60,8 +60,7 @@ Root (module) — from the repo root:
 - `npm run lint` / `npm run lint:plugin` — ESLint over `src/` / `plugin/src/`.
 - `npm run typecheck` — type-checks `src/` without emitting.
 - `npm test` — Jest (`jest-expo` preset) over `src/`.
-- `npm run test:plugin` — Jest over `plugin/src/` (exits 1 until plugin tests are added in
-  L5/L6 — no tests yet).
+- `npm run test:plugin` — Jest over `plugin/src/`.
 - `npm run prepublishOnly` — cleans and builds both `src/` and the plugin (non-interactively, so
   it can't get stuck in `tsc --watch`); runs automatically on `npm publish`.
 
@@ -109,6 +108,11 @@ Example app — from `example/`:
 - **iOS transitive pods that lack modules go in the podspec as direct dependencies.** Expo autolinking
   enables modular headers only for a module's direct dependencies (see ARCHITECTURE.md → Platform
   mechanics). Re-check this whenever the `GoogleSignIn` version changes.
+- **Only import packages this module declares.** The package peers on `expo`, `react` and
+  `react-native`. Import from `expo` (e.g. `requireOptionalNativeModule`) or `expo/config-plugins`, never
+  bare `expo-modules-core` or `@expo/config-plugins`. npm hoisting hides the mistake, but pnpm and
+  Yarn PnP consumers get a resolution error. `CodedError` isn't re-exported by `expo`, so `src/`
+  uses a local class with the same shape.
 - **Check androidx APIs against the pinned release, not `androidx-main`.** Sources on `androidx-main`
   can include APIs that aren't released yet. For example, `GetCredentialResponse.credentials` fails to
   compile against `credentials:1.6.0`, which has only `.credential` (the list arrived in 1.7.0-alpha03). Use the release tag's sources, or
