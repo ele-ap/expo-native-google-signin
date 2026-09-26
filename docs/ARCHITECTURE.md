@@ -71,6 +71,12 @@ each section; superseded decisions are marked, not deleted.
   address, not the Google subject — read `sub` from the ID token instead.
 - **`nonce` is optional pass-through** (Credential Manager `setNonce`, iOS
   `signIn(…nonce:)`), because backends such as Supabase can verify it.
+- **Error detail differs by platform (2026-09-26).** Both platforms use only the shared codes, but
+  Android can tell `NO_GOOGLE_ACCOUNT` and `PROVIDER_UNAVAILABLE` apart through Credential Manager's
+  exception types. GoogleSignIn on iOS has one flat error domain, so every non-cancel iOS failure is
+  `SIGN_IN_FAILED`, with the native domain, code and message kept. Keychain or EMM errors don't
+  mean what `PROVIDER_UNAVAILABLE` means on Android, so they aren't mapped to it. `NO_PRESENTER` and
+  `CONFIGURATION_ERROR` (iOS also requires `iosClientId`) are produced on both platforms.
 - **No web implementation.** Web is better served by the auth provider's OAuth redirect; the web entry
   throws `CONFIGURATION_ERROR` with that guidance so importing the package never breaks a web bundle.
 

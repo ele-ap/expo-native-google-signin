@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward) and L3 (Android) done; next L4 (iOS)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android) and L4 (iOS) done; next L5 (JS + config plugin)
 
 ## Objective
 
@@ -127,7 +127,8 @@ type SignInResult =
    the remaining tests, plugin tests and `release.yml`. ✅ done 2026-09-26 (CI green on PR #1).
 3. **L3 — Android Kotlin + error mapping.** This is the actual deprecation fix, so it goes first.
    ✅ done 2026-09-26: Credential Manager flow, `ErrorMapping.kt` and its JVM unit test (run in CI).
-4. **L4 — iOS Swift + AppDelegate subscriber.**
+4. **L4 — iOS Swift + AppDelegate subscriber.** ✅ done 2026-09-26: GoogleSignIn sign-in/out and
+   `ErrorMapping.swift` (the AppDelegate URL forwarding dates from L2).
 5. **L5 — JS wrapper, web stub, config plugin.**
 6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
 7. **L7 — Docs:** README, CHANGELOG, SECURITY.

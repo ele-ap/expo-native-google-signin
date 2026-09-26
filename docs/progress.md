@@ -3,20 +3,20 @@
 ## Current phase
 
 **v0.1.0 in preparation — module scaffolded (Expo SDK 57).** Build, lint, typecheck and Jest work
-locally, and CI compiles the example app natively (Android, plus iOS on Xcode 26). **Android**
-`signIn`/`signOut` are implemented (Credential Manager); **iOS** is still a stub that rejects with
-"not implemented", and JS validation / the config plugin come in L5.
+locally, and CI compiles the example app natively (Android, plus iOS on Xcode 26). Native
+`signIn`/`signOut` are implemented on **Android** (Credential Manager) and **iOS** (GoogleSignIn). JS
+validation, the config plugin's URL scheme and the example app UI come in L5.
 
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅, L2b (CI native
-compiles, pulled forward) ✅, L3 (Android) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
-where CI compiles Android and iOS on every push. Next step: **L4 — iOS** (`GoogleSignIn`
-`signIn`/`signOut` in Swift, the AppDelegate URL callback already exists).
+compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
+where CI compiles Android and iOS on every push. Next step: **L5 — JS wrapper validation, web stub,
+config plugin** (`iosUrlScheme` → `CFBundleURLTypes`) and the example app's sign-in UI.
 
 ## Up next
 
-1. L4 iOS (`GoogleSignIn`) → L5 JS wrapper / web stub
+1. L5 JS wrapper / web stub
    / config plugin → L6 remaining tests + `release.yml` → L7 docs.
 2. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
    manual or via an `NPM_TOKEN` secret; trusted publishing is configured after the package exists).
@@ -34,3 +34,6 @@ where CI compiles Android and iOS on every push. Next step: **L4 — iOS** (`Goo
 - **2026-09-26 — Android (L3):** Credential Manager `GetSignInWithGoogleOption` sign-in (nonce
   pass-through, cancel resolves `{ type: 'cancelled' }`), `clearCredentialState` sign-out, pure
   `ErrorMapping.kt` with a JVM unit test run in CI.
+- **2026-09-26 — iOS (L4):** GoogleSignIn 9.2 sign-in (iOS + web client IDs, nonce, cancel resolves),
+  sign-out, `ErrorMapping.swift`. Same result shape and codes as Android; non-cancel iOS errors are
+  `SIGN_IN_FAILED` (see ARCHITECTURE.md).

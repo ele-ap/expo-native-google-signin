@@ -59,3 +59,11 @@ item is scheduled, move it into a real plan under `docs/plans/active/`.
   sign-in started just before the Activity is destroyed runs to completion. This is harmless in v0.1.
 - **Action:** if needed, keep the signal and cancel it on Activity destroy (Expo `OnActivityDestroys`),
   resolving `{ type: 'cancelled' }`.
+
+### 8. Swift unit test for `ErrorMapping.swift`
+
+- **Why:** Android's error mapping has a JVM unit test that CI runs (`ErrorMappingTest.kt`). The iOS
+  equivalent (`classifySignInError` in `ios/ErrorMapping.swift`) has none, because the module has no
+  XCTest target yet.
+- **Action:** add a podspec `test_spec` (or a small SwiftPM test target) that CI runs on `macos-26`,
+  covering cancel → cancelled, other errors → `SIGN_IN_FAILED`, and message preservation.
