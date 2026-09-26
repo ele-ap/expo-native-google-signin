@@ -86,6 +86,19 @@ each section; superseded decisions are marked, not deleted.
   macOS) — the only reliable proof, since local/cloud sessions may lack Google Maven or Xcode.
 - **Releases are published from CI with npm provenance**; consumers are told to pin exact versions.
 - **MIT license**, matching the React Native / Expo ecosystem.
+- **`release.yml` is locked down (2026-09-26).** Pushing a `v*` tag publishes to npm with provenance:
+  prereleases go to the `next` dist-tag and stable versions to `latest`. The job only publishes when
+  the tag matches the `package.json` version **and** the tagged commit is on `main`, so a tag on an
+  unreviewed commit can't publish. Other safeguards:
+  - It runs in the `npm` GitHub environment, so protection rules can be added.
+  - It uses no npm cache and doesn't keep the checkout's git credentials.
+  - npm is pinned to an exact version (≥ 11.5.1 is needed for trusted publishing; `latest` floats
+    across majors).
+  - No `${{ }}` expression appears inside a `run:` script, because tag names are attacker-controlled
+    text.
+
+  Auth is npm trusted publishing (OIDC) once the package exists, with an optional `NPM_TOKEN` secret
+  only for the very first publish.
 - **Built against Expo SDK 57 (2026-09-26).** The module and the example app target SDK 57
   (`expo` 57, React Native 0.86), which was the current SDK when scaffolding. The draft plan said
   SDK 56, but starting on the current SDK postpones the first upgrade. Peer dependencies stay

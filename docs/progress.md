@@ -6,18 +6,18 @@
 locally, and CI compiles the example app natively (Android, plus iOS on Xcode 26). The full
 v0.1 API works end to end: `signIn`/`signOut` on **Android** (Credential Manager) and **iOS**
 (GoogleSignIn), JS validation, the Expo Go error, the `iosUrlScheme` config plugin and an example
-sign-in screen. What's left: the release workflow, docs, publishing and device validation.
+sign-in screen. What's left: docs, publishing and device validation.
 
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅, L2b (CI native
-compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
-where CI compiles Android and iOS on every push. Next step: **L6 — `release.yml`** (tag `v*` → npm
-publish with provenance); most L6 tests were pulled into L3/L5.
+compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅, L6 (`release.yml`) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
+where CI compiles Android and iOS on every push. Next step: **L7 — docs** (README, CHANGELOG, SECURITY),
+then L8 publishing, which needs the maintainer's npm account.
 
 ## Up next
 
-1. L6 `release.yml` → L7 docs (README, CHANGELOG, SECURITY).
+1. L7 docs (README, CHANGELOG, SECURITY).
 2. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
    manual or via an `NPM_TOKEN` secret; trusted publishing is configured after the package exists).
 3. L9 validate in a real consumer app on both platforms → publish `0.1.0` (`latest`).
@@ -41,3 +41,7 @@ publish with provenance); most L6 tests were pulled into L3/L5.
   "requires a development build" error in Expo Go, a shared internal `CodedError` (no undeclared
   `expo-modules-core` import), the `iosUrlScheme` plugin (validated, added once), the example sign-in
   screen, and 32 Jest + 8 plugin tests run in CI.
+- **2026-09-26 — Release workflow (L6):** `release.yml`. A `v*` tag publishes to npm with provenance
+  (prereleases → `next`), after the tag/version and tag-on-`main` checks and the JS checks. It runs
+  in the `npm` environment, uses no cache, and pins npm 11.20.0. Auth is trusted publishing (OIDC), or
+  an `NPM_TOKEN` for the first publish.

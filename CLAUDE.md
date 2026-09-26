@@ -108,6 +108,9 @@ Example app — from `example/`:
 - **iOS transitive pods that lack modules go in the podspec as direct dependencies.** Expo autolinking
   enables modular headers only for a module's direct dependencies (see ARCHITECTURE.md → Platform
   mechanics). Re-check this whenever the `GoogleSignIn` version changes.
+- **Workflows: never put `${{ ... }}` inside a `run:` script.** Pass values through `env:` and use
+  quoted shell variables. Ref and tag names are attacker-controlled text. `release.yml` also must keep:
+  the tag-on-`main` check, no cache, `persist-credentials: false`, and an exactly pinned npm version.
 - **Only import packages this module declares.** The package peers on `expo`, `react` and
   `react-native`. Import from `expo` (e.g. `requireOptionalNativeModule`) or `expo/config-plugins`, never
   bare `expo-modules-core` or `@expo/config-plugins`. npm hoisting hides the mistake, but pnpm and

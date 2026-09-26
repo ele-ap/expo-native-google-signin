@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS) and L5 (JS + plugin) done; next L6 (`release.yml`)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin) and L6 (`release.yml`) done; next L7 (docs)
 
 ## Objective
 
@@ -133,6 +133,7 @@ type SignInResult =
    error, `iosUrlScheme` → `CFBundleURLTypes`, the example sign-in screen, and the Jest + plugin tests
    (pulled forward from L6; CI runs both).
 6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
+   ✅ done 2026-09-26: the tests landed in L3/L5; `release.yml` (tag-on-main check, OIDC or token, provenance).
 7. **L7 — Docs:** README, CHANGELOG, SECURITY.
 8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag).
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
