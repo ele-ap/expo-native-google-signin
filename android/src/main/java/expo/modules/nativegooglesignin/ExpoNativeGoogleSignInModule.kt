@@ -87,7 +87,8 @@ class ExpoNativeGoogleSignInModule : Module() {
 
   private fun resolveSignIn(response: GetCredentialResponse, promise: Promise) {
     try {
-      val credential = response.credentials.first()
+      // 1.6.0 exposes only `credential` (singular); the `credentials` list arrived in 1.7.0-alpha03.
+      val credential = response.credential
       if (
         credential !is CustomCredential ||
         credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL

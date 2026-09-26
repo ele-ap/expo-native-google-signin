@@ -109,6 +109,10 @@ Example app — from `example/`:
 - **iOS transitive pods that lack modules go in the podspec as direct dependencies.** Expo autolinking
   enables modular headers only for a module's direct dependencies (see ARCHITECTURE.md → Platform
   mechanics). Re-check this whenever the `GoogleSignIn` version changes.
+- **Check androidx APIs against the pinned release, not `androidx-main`.** Sources on `androidx-main`
+  can include APIs that aren't released yet. For example, `GetCredentialResponse.credentials` fails to
+  compile against `credentials:1.6.0`, which has only `.credential` (the list arrived in 1.7.0-alpha03). Use the release tag's sources, or
+  let the CI compile decide.
 
 ---
 
