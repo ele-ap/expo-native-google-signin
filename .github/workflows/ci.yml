@@ -113,7 +113,7 @@ jobs:
 
   ios:
     name: iOS example (simulator build)
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -137,12 +137,12 @@ jobs:
           npm run build:plugin
 
       - name: Select Xcode
-        # Defensive pin: GoogleSignIn ~> 9.2 (and RN 0.86's default iOS 16.4
-        # deployment target) only need Xcode 16.4, which is macos-15's
-        # default today — pinning keeps that true even if the runner image's
-        # default ever moves to Xcode 27, which GoogleSignIn 9.2 does not
-        # support (see docs/ARCHITECTURE.md).
-        run: sudo xcode-select -s /Applications/Xcode_16.4.app
+        # Expo SDK 57 needs Xcode 26+: expo-modules-jsi's Package.swift declares
+        # swift-tools-version 6.2. Xcode 27 stays out until GoogleSignIn 10.x is
+        # adopted (backlog #1; a cautious choice, not a known 9.2 breakage). Pin
+        # macos-26's current default so the image moving to Xcode 27 can't
+        # silently change the build.
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
 
       - name: Install example dependencies
         working-directory: example

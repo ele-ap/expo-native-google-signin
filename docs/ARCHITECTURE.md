@@ -93,3 +93,10 @@ each section; superseded decisions are marked, not deleted.
 - **Podspec iOS minimum is 15.1**, lower than the SDK 57 template default of 16.4. It is only a floor
   (the consuming app's deployment target governs) and stays compatible with `GoogleSignIn ~> 9.2`.
   Revisit when adopting GoogleSignIn 10.x (backlog #1).
+- **CI builds iOS with Xcode 26 (`macos-26`, `Xcode_26.6.app` pinned).** Expo SDK 57 requires Xcode 26:
+  `expo-modules-jsi` declares `swift-tools-version: 6.2`, and its xcframework build phase fails on
+  Xcode 16.4 ("Could not resolve package dependencies"). The first pin (`macos-15` / Xcode 16.4) only
+  checked React Native's own minimum (16.1). `expo-modules-core` depends on `ExpoModulesJSI`, so
+  this applies to every Expo SDK 57 app: consumers need Xcode 26+. The README states it (plan step L7).
+  Xcode 27 stays out of CI until GoogleSignIn 10.x is adopted (backlog #1). That is a cautious
+  choice: no incompatibility of GoogleSignIn 9.2 with Xcode 27 is documented.

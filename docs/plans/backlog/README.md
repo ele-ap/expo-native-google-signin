@@ -45,8 +45,10 @@ item is scheduled, move it into a real plan under `docs/plans/active/`.
 
 ### 6. CI macOS runner / Xcode pin
 
-- **Why:** `ci.yml` pins `macos-15` + `Xcode_16.4.app` to stay on Xcode 16/26 while GoogleSignIn is
-  pinned to 9.2 (10.x needs Xcode 27). GitHub will eventually deprecate the `macos-15` image.
+- **Why:** `ci.yml` pins `macos-26` + `Xcode_26.6.app`. Expo SDK 57 needs Xcode 26+, and
+  Xcode 27 is kept out until GoogleSignIn 10.x (which requires it) is adopted. Runner images change their default and
+  installed Xcode versions over time, so the pinned app path can disappear.
 - **Action:** when moving runners, check the new image's default Xcode against React Native's
-  `min_xcode_version_supported` (16.1 for RN 0.86, in `react-native/scripts/cocoapods/helpers.rb`).
+  `min_xcode_version_supported` (16.1 for RN 0.86, in `react-native/scripts/cocoapods/helpers.rb`)
+  **and** Expo's Swift tools version (6.2 → Xcode 26, in `expo-modules-jsi/apple/Package.swift`).
   Do it together with backlog #1 if possible.

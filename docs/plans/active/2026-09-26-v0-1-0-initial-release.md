@@ -145,7 +145,7 @@ type SignInResult =
 - **CI (`ci.yml`, on PRs + `main`):**
   - lint, typecheck, build and Jest on ubuntu
   - example prebuild + `./gradlew :app:assembleDebug` on ubuntu (**compiles the Kotlin**)
-  - example prebuild + `pod install` + `xcodebuild` for the simulator on `macos-15` (Xcode 16.4 pinned; see `ci.yml`) (**compiles
+  - example prebuild + `pod install` + `xcodebuild` for the simulator on `macos-26` (Xcode 26.6 pinned; see `ci.yml`) (**compiles
     the Swift**)
 - **Maintainer device test** with the example app on both platforms:
   - sign in, cancel, the no-account case, sign out
@@ -179,6 +179,7 @@ type SignInResult =
 - **CI is green on `main`:** Jest, plus the Android and iOS example compiles.
 - **README is complete:**
   - install and config plugin
+  - requirements: Expo SDK 57 and Xcode 26+ (see ARCHITECTURE.md → CI builds iOS with Xcode 26)
   - GCP setup with both SHA-1s
   - Supabase `signInWithIdToken` example (nonce pattern shown) and a Firebase note
   - error codes
