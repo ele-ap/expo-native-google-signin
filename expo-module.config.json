@@ -1,0 +1,10 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["ExpoNativeGoogleSignInModule"],
+    "appDelegateSubscribers": ["ExpoNativeGoogleSignInAppDelegateSubscriber"]
+  },
+  "android": {
+    "modules": ["expo.modules.nativegooglesignin.ExpoNativeGoogleSignInModule"]
+  }
+}

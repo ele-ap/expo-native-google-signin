@@ -73,3 +73,16 @@ each section; superseded decisions are marked, not deleted.
   macOS) — the only reliable proof, since local/cloud sessions may lack Google Maven or Xcode.
 - **Releases are published from CI with npm provenance**; consumers are told to pin exact versions.
 - **MIT license**, matching the React Native / Expo ecosystem.
+- **Built against Expo SDK 57 (2026-09-26).** The module and the example app target SDK 57
+  (`expo` 57, React Native 0.86), which was the current SDK when scaffolding. The draft plan said
+  SDK 56, but starting on the current SDK postpones the first upgrade. Peer dependencies stay
+  unpinned (`*`). Only the SDK versions that CI compiles against are claimed as supported.
+- **Tooling is `expo-module-scripts` (`^56`), not the SDK 57 template's inlined scripts.** The SDK 57
+  `expo-module-template` dropped `expo-module-scripts` for copied-in scripts plus `.npmignore`. We
+  keep the published package, because it gives build, lint, test and publish in one maintained
+  dependency. `56.0.3` is still its newest release (no 57.x exists), so `^56` is correct, not stale.
+  We publish through a `files` whitelist, and `prepublishOnly` also builds `plugin/build`.
+  A root `babel.config.js` (`babel-preset-expo`) is required by the Jest preset and is not published.
+- **Podspec iOS minimum is 15.1**, lower than the SDK 57 template default of 16.4. It is only a floor
+  (the consuming app's deployment target governs) and stays compatible with `GoogleSignIn ~> 9.2`.
+  Revisit when adopting GoogleSignIn 10.x (backlog #1).

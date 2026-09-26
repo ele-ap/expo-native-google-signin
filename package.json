@@ -1,0 +1,78 @@
+{
+  "name": "expo-native-google-signin",
+  "version": "0.1.0-beta.0",
+  "description": "Native Google Sign-In for Expo apps using Android Credential Manager and the iOS GoogleSignIn SDK — no legacy play-services-auth, no @react-native-google-signin/google-signin dependency.",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build",
+    "plugin/build",
+    "ios",
+    "android",
+    "!android/build",
+    "!android/.cxx",
+    "!android/src/androidTest",
+    "!android/src/test",
+    "app.plugin.js",
+    "expo-module.config.json"
+  ],
+  "scripts": {
+    "build": "expo-module build",
+    "build:plugin": "expo-module build plugin",
+    "clean": "expo-module clean",
+    "clean:plugin": "expo-module clean plugin",
+    "lint": "expo-module lint",
+    "lint:plugin": "expo-module lint plugin",
+    "typecheck": "expo-module typecheck",
+    "test": "expo-module test",
+    "test:plugin": "expo-module test plugin",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "EXPO_NONINTERACTIVE=1 sh -c 'expo-module clean && expo-module clean plugin && expo-module build && expo-module build plugin'",
+    "expo-module": "expo-module",
+    "open:ios": "xed example/ios",
+    "open:android": "open -a \"Android Studio\" example/android"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "expo-native-google-signin",
+    "google-sign-in",
+    "google-signin",
+    "credential-manager",
+    "oauth",
+    "authentication",
+    "android",
+    "ios"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ele-ap/expo-native-google-signin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ele-ap/expo-native-google-signin/issues"
+  },
+  "author": "ele-ap",
+  "license": "MIT",
+  "homepage": "https://github.com/ele-ap/expo-native-google-signin#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@types/node": "^22.20.4",
+    "@types/react": "~19.2.2",
+    "babel-preset-expo": "~57.0.13",
+    "eslint": "~9.39.4",
+    "expo": "~57.0.25",
+    "expo-module-scripts": "^56.0.3",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "typescript": "~6.0.3"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "react": "*",
+    "react-native": "*"
+  },
+  "jest": {
+    "preset": "expo-module-scripts"
+  }
+}

@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) done; confirm before starting L2 (run `/startup` first)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; next L3 (Android)
 
 ## Objective
 
@@ -32,7 +32,7 @@ no dependency on `@react-native-google-signin/google-signin`.
 
 ## Files to create (after bootstrap)
 
-Standard non-local Expo module layout from `expo-module-template` (SDK 56), with the view, events and
+Standard non-local Expo module layout from `expo-module-template` (SDK 57), with the view, events and
 tvOS parts stripped:
 
 - **`package.json`:**
@@ -119,7 +119,7 @@ type SignInResult =
 
 1. **L1 — Bootstrap:** AI-development docs, git and the public GitHub repo `ele-ap/expo-native-google-signin` ✅ done 2026-09-26.
 2. **L2 — Scaffold** from the template, then strip it down; finalise the Commands section of
-   CLAUDE.md.
+   CLAUDE.md ✅ done 2026-09-26 (SDK 57).
 3. **L3 — Android Kotlin + error mapping.** This is the actual deprecation fix, so it goes first.
 4. **L4 — iOS Swift + AppDelegate subscriber.**
 5. **L5 — JS wrapper, web stub, config plugin.**

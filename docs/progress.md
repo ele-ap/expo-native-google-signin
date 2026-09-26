@@ -2,18 +2,17 @@
 
 ## Current phase
 
-**Bootstrap — v0.1.0 in preparation.** The repository holds the AI-development structure (CLAUDE.md,
-ARCHITECTURE.md, plans, subagents and commands) but no module code yet.
+**v0.1.0 in preparation — module scaffolded (Expo SDK 57).** Build, lint, typecheck and Jest work
+locally; native `signIn`/`signOut` are still stubs that reject with "not implemented".
 
 ## Active plan
 
-`docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 (bootstrap) ✅ done 2026-09-26.**
-Next step: **L2 — scaffold** the module from `expo-module-template` (SDK 56) and replace the
-"Commands" section of CLAUDE.md with the real commands.
+`docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅ done
+2026-09-26.** Next step: **L3 — Android** (Credential Manager `signIn`/`signOut` + `ErrorMapping.kt`).
 
 ## Up next
 
-1. L2 scaffold → L3 Android (Credential Manager) → L4 iOS (`GoogleSignIn`) → L5 JS wrapper / web stub
+1. L3 Android (Credential Manager) → L4 iOS (`GoogleSignIn`) → L5 JS wrapper / web stub
    / config plugin → L6 tests + CI (native compiles) → L7 docs.
 2. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
    manual or via an `NPM_TOKEN` secret; trusted publishing is configured after the package exists).
@@ -22,3 +21,6 @@ Next step: **L2 — scaffold** the module from `expo-module-template` (SDK 56) a
 ## Completed
 
 - **2026-09-26 — Bootstrap (L1):** public repo `ele-ap/expo-native-google-signin` (MIT), AI-development docs, subagents and commands.
+- **2026-09-26 — Scaffold (L2):** Expo module on SDK 57 (`expo-module-scripts` tooling), JS types and
+  web stub, config-plugin skeleton, Android/iOS stubs with the Google dependencies declared, example
+  app wired to `EXPO_PUBLIC_*` env vars; real Commands section in CLAUDE.md.
