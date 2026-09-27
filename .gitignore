@@ -3,6 +3,8 @@ node_modules/
 
 # Build output
 build/
+# npm pack / npm view tarballs (e.g. from local checks)
+*.tgz
 plugin/build/
 *.tsbuildinfo
 

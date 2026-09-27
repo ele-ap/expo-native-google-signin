@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) done; confirm before starting L2 (run `/startup` first)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; next L8 (publish — maintainer)
 
 ## Objective
 
@@ -32,7 +32,7 @@ no dependency on `@react-native-google-signin/google-signin`.
 
 ## Files to create (after bootstrap)
 
-Standard non-local Expo module layout from `expo-module-template` (SDK 56), with the view, events and
+Standard non-local Expo module layout from `expo-module-template` (SDK 57), with the view, events and
 tvOS parts stripped:
 
 - **`package.json`:**
@@ -119,12 +119,22 @@ type SignInResult =
 
 1. **L1 — Bootstrap:** AI-development docs, git and the public GitHub repo `ele-ap/expo-native-google-signin` ✅ done 2026-09-26.
 2. **L2 — Scaffold** from the template, then strip it down; finalise the Commands section of
-   CLAUDE.md.
+   CLAUDE.md ✅ done 2026-09-26 (SDK 57).
+2b. **L2b — CI compiles, pulled forward from L6** (maintainer decision 2026-09-26). Add
+   `.github/workflows/ci.yml` now: the JS job (lint, typecheck, build, Jest), the example prebuild
+   plus Android `assembleDebug` on ubuntu, and prebuild plus `pod install` plus a simulator
+   `xcodebuild` on macOS. Work from a draft PR so every L3–L5 push is compiled natively. L6 keeps
+   the remaining tests, plugin tests and `release.yml`. ✅ done 2026-09-26 (CI green on PR #1).
 3. **L3 — Android Kotlin + error mapping.** This is the actual deprecation fix, so it goes first.
-4. **L4 — iOS Swift + AppDelegate subscriber.**
-5. **L5 — JS wrapper, web stub, config plugin.**
-6. **L6 — Tests + CI.** Native compiles are proven here.
-7. **L7 — Docs:** README, CHANGELOG, SECURITY.
+   ✅ done 2026-09-26: Credential Manager flow, `ErrorMapping.kt` and its JVM unit test (run in CI).
+4. **L4 — iOS Swift + AppDelegate subscriber.** ✅ done 2026-09-26: GoogleSignIn sign-in/out and
+   `ErrorMapping.swift` (the AppDelegate URL forwarding dates from L2).
+5. **L5 — JS wrapper, web stub, config plugin.** ✅ done 2026-09-26: JS validation, Expo Go
+   error, `iosUrlScheme` → `CFBundleURLTypes`, the example sign-in screen, and the Jest + plugin tests
+   (pulled forward from L6; CI runs both).
+6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
+   ✅ done 2026-09-26: the tests landed in L3/L5; `release.yml` (tag-on-main check, OIDC or token, provenance).
+7. **L7 — Docs:** README, CHANGELOG, SECURITY. ✅ done 2026-09-26.
 8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag).
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
 
@@ -140,7 +150,7 @@ type SignInResult =
 - **CI (`ci.yml`, on PRs + `main`):**
   - lint, typecheck, build and Jest on ubuntu
   - example prebuild + `./gradlew :app:assembleDebug` on ubuntu (**compiles the Kotlin**)
-  - example prebuild + `pod install` + `xcodebuild` for the simulator on `macos-latest` (**compiles
+  - example prebuild + `pod install` + `xcodebuild` for the simulator on `macos-26` (Xcode 26.6 pinned; see `ci.yml`) (**compiles
     the Swift**)
 - **Maintainer device test** with the example app on both platforms:
   - sign in, cancel, the no-account case, sign out
@@ -174,6 +184,7 @@ type SignInResult =
 - **CI is green on `main`:** Jest, plus the Android and iOS example compiles.
 - **README is complete:**
   - install and config plugin
+  - requirements: Expo SDK 57 and Xcode 26+ (see ARCHITECTURE.md → CI builds iOS with Xcode 26)
   - GCP setup with both SHA-1s
   - Supabase `signInWithIdToken` example (nonce pattern shown) and a Firebase note
   - error codes

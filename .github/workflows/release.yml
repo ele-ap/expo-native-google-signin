@@ -1,0 +1,184 @@
+# Publishes the module to npm.
+#
+# Only push a `vX.Y.Z` tag from a commit that is already green on `main`
+# (ci.yml). This workflow re-runs the fast JS checks as a final gate, but it
+# does NOT recompile the Android/iOS example -- that's ci.yml's job, already
+# proven on the PR and on `main` before the tag was cut. It also checks that
+# the tagged commit is actually reachable from `main` (see "Verify tag is on
+# main" below), so a tag pushed from a stray branch can't publish.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  # Manual re-runs must still target a tag ref (e.g. by picking the tag in
+  # the "Use workflow from" branch/tag selector) -- the tag/version check
+  # below fails closed for anything else, including a branch.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for npm provenance and for npm's OIDC trusted-publishing
+  # exchange (see the Publish step below).
+  id-token: write
+
+# Only one release publishes at a time; never cancel one mid-publish.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  CI: true
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Lets the maintainer attach branch/tag or reviewer protection rules to
+    # an "npm" environment in the repo's settings later. npm trusted
+    # publishing can optionally be scoped to this same environment name.
+    environment: npm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Full history so `git merge-base --is-ancestor` below can find
+          # origin/main and the tagged commit's relationship to it.
+          fetch-depth: 0
+          # No git credential is needed after checkout (we only read from
+          # the public repo below; nothing here pushes back to git), so
+          # don't leave one lying around in the workspace.
+          persist-credentials: false
+
+      - name: Verify tag is on main
+        # `persist-credentials: false` above only drops the *write* credential
+        # actions/checkout would otherwise leave behind; anonymous HTTPS reads
+        # of a public GitHub repo (this one) work unauthenticated, so this
+        # fetch does not need a token.
+        #
+        # No --depth here: this clone is already full (fetch-depth: 0), and a
+        # shallow fetch on top of a full clone would make it shallow again,
+        # which can break merge-base's ancestry walk.
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Commit $GITHUB_SHA (tag $GITHUB_REF_NAME) is not an ancestor of origin/main. Only publish tags cut from a commit that is on main."
+            exit 1
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          # No dependency cache here: this is a one-shot release job, not a
+          # frequently re-run CI job, so there's little to amortize, and a
+          # poisoned/stale cache is one less thing to reason about right
+          # before a publish.
+          # Needed so `actions/setup-node` writes an npmrc auth line for the
+          # NPM_TOKEN fallback (see the Publish step). Harmless when that
+          # secret is unset -- see the Publish step's comment.
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify tag matches package.json version
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          if [ "$REF_TYPE" != "tag" ]; then
+            echo "::error::This workflow only publishes from a tag ref (refs/tags/vX.Y.Z). Got ref_type=$REF_TYPE, ref=$GITHUB_REF."
+            exit 1
+          fi
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME (version $TAG_VERSION) does not match package.json version $PKG_VERSION."
+            exit 1
+          fi
+          echo "Publishing $PKG_VERSION from tag $GITHUB_REF_NAME"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint module
+        run: npm run lint
+
+      - name: Lint plugin
+        run: npm run lint:plugin
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # These build steps are run explicitly, even though `npm publish`'s
+      # own `prepublishOnly` script rebuilds everything again just before
+      # packing -- this way a build failure shows up as its own labelled
+      # step, before the lint/typecheck/test gate below has to depend on it.
+      - name: Build module
+        run: npm run build
+
+      - name: Build plugin
+        run: npm run build:plugin
+
+      - name: Test
+        run: npm test
+
+      - name: Test plugin
+        run: npm run test:plugin
+
+      - name: Determine npm dist-tag
+        id: dist_tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *-* ]]; then
+            TAG=next
+          else
+            TAG=latest
+          fi
+          echo "Publishing $VERSION with npm dist-tag: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Pin npm for trusted publishing (OIDC) support
+        # npm's OIDC trusted-publishing exchange (lib/utils/oidc.js) isn't in
+        # the npm 10.x bundled with Node 22 -- it shipped in npm 11.5.1.
+        # `npm@latest` is already npm 12.x, with a narrower Node engines
+        # range than we want to guarantee here, so pin to a specific
+        # >=11.5.1 release (11.20.0; engines `^20.17.0 || >=22.9.0`, well
+        # within `node-version: 22` above) instead of floating on `latest`.
+        # Bump this pin deliberately, not automatically.
+        run: |
+          npm install -g npm@11.20.0
+          npm -v
+
+      - name: Publish
+        env:
+          DIST_TAG: ${{ steps.dist_tag.outputs.tag }}
+          # Two auth modes; this one line covers both without branching:
+          #
+          # (a) npm trusted publishing (OIDC) -- the target once this
+          #     package exists on npm (see README/CHANGELOG for the
+          #     npmjs.com setup). No token needed: `id-token: write` above
+          #     lets npm's own OIDC exchange request a short-lived token
+          #     from npmjs.com for this exact repo + workflow. That exchange
+          #     runs unconditionally on GitHub Actions and builds its own
+          #     request token from the Actions OIDC endpoint -- it does not
+          #     read NODE_AUTH_TOKEN, so it isn't affected by it being
+          #     unset here.
+          #
+          #     If NPM_TOKEN is unset, this evaluates to an empty string,
+          #     and `actions/setup-node`'s registry-url writes that into
+          #     .npmrc as an empty `_authToken`. Read against npm's own
+          #     publish command (lib/commands/publish.js): it treats an
+          #     empty token as falsy ("not logged in"), never as a malformed
+          #     `Authorization: Bearer` header sent to the registry. So if
+          #     OIDC also fails (trusted publisher not configured yet), npm
+          #     fails cleanly with "you must be logged in" instead of
+          #     sending a broken request -- an empty NODE_AUTH_TOKEN cannot
+          #     break the OIDC path.
+          #
+          # (b) An NPM_TOKEN repo secret -- fallback for the very first
+          #     publish, before a package exists on npm for a trusted
+          #     publisher to be registered against. Remove the secret once
+          #     (a) is configured on npmjs.com.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public --tag "$DIST_TAG"

@@ -49,6 +49,13 @@ each section; superseded decisions are marked, not deleted.
   `ExpoNativeGoogleSignInModule`) because `GoogleSignIn` is the iOS SDK's Swift module name.
 - **URL callback:** an `ExpoAppDelegateSubscriber` forwards `application(_:open:options:)` to
   `GIDSignIn.sharedInstance.handle(url)`.
+- **The podspec lists `GoogleUtilities` and `RecaptchaInterop` as direct dependencies (2026-09-26).**
+  GoogleSignIn 9 pulls in `AppCheckCore`, which CocoaPods treats as a Swift pod (it declares a
+  `swift_version`). Two of its dependencies don't define modules, so
+  `pod install` fails under Expo's default static-library Podfile. The first CI iOS run hit exactly
+  this. Expo autolinking enables modular headers only for the *direct* dependencies of a module pod.
+  Declaring the two pods directly, without versions, fixes it with no consumer Podfile changes and no
+  `useFrameworks` requirement. Re-check this list whenever the GoogleSignIn version changes.
 
 ## Public API shape (2026-09-26)
 
@@ -64,6 +71,12 @@ each section; superseded decisions are marked, not deleted.
   address, not the Google subject — read `sub` from the ID token instead.
 - **`nonce` is optional pass-through** (Credential Manager `setNonce`, iOS
   `signIn(…nonce:)`), because backends such as Supabase can verify it.
+- **Error detail differs by platform (2026-09-26).** Both platforms use only the shared codes, but
+  Android can tell `NO_GOOGLE_ACCOUNT` and `PROVIDER_UNAVAILABLE` apart through Credential Manager's
+  exception types. GoogleSignIn on iOS has one flat error domain, so every non-cancel iOS failure is
+  `SIGN_IN_FAILED`, with the native domain, code and message kept. Keychain or EMM errors don't
+  mean what `PROVIDER_UNAVAILABLE` means on Android, so they aren't mapped to it. `NO_PRESENTER` and
+  `CONFIGURATION_ERROR` (iOS also requires `iosClientId`) are produced on both platforms.
 - **No web implementation.** Web is better served by the auth provider's OAuth redirect; the web entry
   throws `CONFIGURATION_ERROR` with that guidance so importing the package never breaks a web bundle.
 
@@ -73,3 +86,36 @@ each section; superseded decisions are marked, not deleted.
   macOS) — the only reliable proof, since local/cloud sessions may lack Google Maven or Xcode.
 - **Releases are published from CI with npm provenance**; consumers are told to pin exact versions.
 - **MIT license**, matching the React Native / Expo ecosystem.
+- **`release.yml` is locked down (2026-09-26).** Pushing a `v*` tag publishes to npm with provenance:
+  prereleases go to the `next` dist-tag and stable versions to `latest`. The job only publishes when
+  the tag matches the `package.json` version **and** the tagged commit is on `main`, so a tag on an
+  unreviewed commit can't publish. Other safeguards:
+  - It runs in the `npm` GitHub environment, so protection rules can be added.
+  - It uses no npm cache and doesn't keep the checkout's git credentials.
+  - npm is pinned to an exact version (≥ 11.5.1 is needed for trusted publishing; `latest` floats
+    across majors).
+  - No `${{ }}` expression appears inside a `run:` script, because tag names are attacker-controlled
+    text.
+
+  Auth is npm trusted publishing (OIDC) once the package exists, with an optional `NPM_TOKEN` secret
+  only for the very first publish.
+- **Built against Expo SDK 57 (2026-09-26).** The module and the example app target SDK 57
+  (`expo` 57, React Native 0.86), which was the current SDK when scaffolding. The draft plan said
+  SDK 56, but starting on the current SDK postpones the first upgrade. Peer dependencies stay
+  unpinned (`*`). Only the SDK versions that CI compiles against are claimed as supported.
+- **Tooling is `expo-module-scripts` (`^56`), not the SDK 57 template's inlined scripts.** The SDK 57
+  `expo-module-template` dropped `expo-module-scripts` for copied-in scripts plus `.npmignore`. We
+  keep the published package, because it gives build, lint, test and publish in one maintained
+  dependency. `56.0.3` is still its newest release (no 57.x exists), so `^56` is correct, not stale.
+  We publish through a `files` whitelist, and `prepublishOnly` also builds `plugin/build`.
+  A root `babel.config.js` (`babel-preset-expo`) is required by the Jest preset and is not published.
+- **Podspec iOS minimum is 15.1**, lower than the SDK 57 template default of 16.4. It is only a floor
+  (the consuming app's deployment target governs) and stays compatible with `GoogleSignIn ~> 9.2`.
+  Revisit when adopting GoogleSignIn 10.x (backlog #1).
+- **CI builds iOS with Xcode 26 (`macos-26`, `Xcode_26.6.app` pinned).** Expo SDK 57 requires Xcode 26:
+  `expo-modules-jsi` declares `swift-tools-version: 6.2`, and its xcframework build phase fails on
+  Xcode 16.4 ("Could not resolve package dependencies"). The first pin (`macos-15` / Xcode 16.4) only
+  checked React Native's own minimum (16.1). `expo-modules-core` depends on `ExpoModulesJSI`, so
+  this applies to every Expo SDK 57 app: consumers need Xcode 26+. The README states it (plan step L7).
+  Xcode 27 stays out of CI until GoogleSignIn 10.x is adopted (backlog #1). That is a cautious
+  choice: no incompatibility of GoogleSignIn 9.2 with Xcode 27 is documented.
