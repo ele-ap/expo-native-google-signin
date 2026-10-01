@@ -18,17 +18,16 @@ consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.
 2026-10-01.** The first publish was manual with 2FA: the tag-triggered `release.yml` run failed with
 `E_STAGE_REQUIRED`, because a bypass-2FA token can't create a new package (see ARCHITECTURE.md →
 "Engineering & release"). **L8b (OIDC-only `release.yml`) ✅ 2026-10-01.** **L9 is in progress:**
-release prep is done in the PR; the maintainer's consumer validation, the tag and the post-publish
-wrap-up remain.
+release prep is done in the PR, and the maintainer validated the published `0.1.0-beta.0` in a
+real consumer app (2026-10-01). The tag and the post-publish wrap-up remain.
 
 ## Up next
 
-1. Maintainer: validate the published `0.1.0-beta.0` in a consumer app on both platforms. The package
-   code is identical to `0.1.0`.
-2. Merge the PR with CI green.
-3. Tag `v0.1.0` on `main` and push. This is the first real OIDC publish; if it fails with `ENEEDAUTH`,
+1. Merge the PR with CI green. (Consumer validation of the published `0.1.0-beta.0` was reported to
+   work on 2026-10-01, and its package code is identical to `0.1.0`.)
+2. Tag `v0.1.0` on `main` and push. This is the first real OIDC publish; if it fails with `ENEEDAUTH`,
    check the npmjs.com Trusted Publisher fields first.
-4. A follow-up docs PR: verify `latest: 0.1.0` and the provenance badge, archive the plan, and update
+3. A follow-up docs PR: verify `latest: 0.1.0` and the provenance badge, archive the plan, and update
    progress.md and ARCHITECTURE.md.
 
 ## Completed
