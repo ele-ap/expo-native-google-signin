@@ -281,12 +281,12 @@ See `CLAUDE.md` for the full command reference (`npm run build`, `lint`, `typech
    (prereleases go to the `next` dist-tag, stable versions to `latest`), but only if the tag matches
    `package.json`'s version and the tagged commit is on `main`.
 
-**Auth:** `release.yml` is meant to publish through npm trusted publishing (OIDC). Configure it
-before tagging the next release: on npmjs.com, package settings → **Trusted Publisher** → GitHub
-Actions, repo `ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. No token
-is needed after that. The first version (`0.1.0-beta.0`) was
-published manually with 2FA, because npm only lets a 2FA-bypassing token publish to a staging area
-for a package that doesn't exist yet (`E_STAGE_REQUIRED`).
+**Auth:** `release.yml` publishes through npm trusted publishing (OIDC), configured on npmjs.com
+under package settings → **Trusted Publisher** → GitHub Actions, repo
+`ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. No npm token is used.
+The first version (`0.1.0-beta.0`) was published manually with 2FA, because npm only lets a
+2FA-bypassing token publish to a staging area for a package that doesn't exist yet
+(`E_STAGE_REQUIRED`).
 
 ## Disclaimer
 

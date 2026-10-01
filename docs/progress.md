@@ -13,17 +13,20 @@ plus iOS on Xcode 26) on every push.
 consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.0-beta.0`) ✅ —
 2026-10-01.** The first publish was manual with 2FA: the tag-triggered `release.yml` run failed with
 `E_STAGE_REQUIRED`, because a bypass-2FA token can't create a new package (see ARCHITECTURE.md →
-"Engineering & release").
+"Engineering & release"). Trusted publishing is now configured and the token deleted, so
+`release.yml` is set up to publish through OIDC only. That path is untested until the `0.1.0` tag,
+its first OIDC run.
 
 ## Up next
 
-1. **Maintainer:** configure npm trusted publishing for `release.yml` (README → Contributing /
-   releasing), then delete the `NPM_TOKEN` secret and the npm token.
-2. L9 — validate the **published** package in a real consumer app on both platforms, then publish
+1. L9 — validate the **published** package in a real consumer app on both platforms, then publish
    `0.1.0` (`latest`) from CI with provenance.
 
 ## Completed
 
+- **2026-10-01 — npm trusted publishing configured:** the maintainer registered `release.yml`
+  (environment `npm`) as the package's trusted publisher on npmjs.com, then deleted the `NPM_TOKEN`
+  repo secret and the npm token.
 - **2026-10-01 — Published `0.1.0-beta.0` (L8):** manual first publish with 2FA after the CI run
   failed with `E_STAGE_REQUIRED`. The tarball has 38 files, including `build/index.web.js`.
 - **2026-10-01 — Pre-publish consumer fixes (L7b), PR #2:** a pre-publish tarball was run

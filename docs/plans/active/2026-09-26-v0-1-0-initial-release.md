@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; next L9 (consumer validation of the published package, then `0.1.0`)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01, with trusted publishing configured and the token deleted the same day; next L9 (consumer validation of the published package, then `0.1.0`)
 
 ## Objective
 
@@ -171,7 +171,7 @@ type SignInResult =
 8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag). ✅ done 2026-10-01. The tag-triggered
    `release.yml` run failed with `E_STAGE_REQUIRED` (a bypass-2FA token can't create a new package),
    so the maintainer published by hand with 2FA from a fresh checkout of the tag (no provenance).
-   Next: configure trusted publishing and delete the token.
+   Trusted publishing was then configured and the token deleted (2026-10-01).
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
 
 ## Test strategy
@@ -213,7 +213,7 @@ type SignInResult =
   manually by you (`npm publish --access public --tag next`) or via an `NPM_TOKEN` repo secret you
   add.
 - **After that:** configure npm trusted publishing for `release.yml` (tag `v*` →
-  `npm publish --provenance`) and delete the token.
+  `npm publish --provenance`) and delete the token. ✅ done 2026-10-01.
 
 ## Definition of done
 

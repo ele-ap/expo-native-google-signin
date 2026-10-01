@@ -110,7 +110,9 @@ each section; superseded decisions are marked, not deleted.
 
   Auth is npm trusted publishing (OIDC) once the package exists, with an optional `NPM_TOKEN` secret
   only for the very first publish. _(Superseded 2026-10-01 for the first publish: the token fallback
-  failed — see the next bullet.)_
+  failed — see the next bullet.) Trusted publishing was configured for `release.yml` (environment
+  `npm`) and the `NPM_TOKEN` secret and npm token were deleted on 2026-10-01, so no token fallback
+  remains._
 - **The first publish was manual, with 2FA (2026-10-01).** The `NPM_TOKEN` fallback didn't work for
   it: a granular token that bypasses 2FA could only publish to a staging area, and npm refused to
   create a new package that way (`E403 … E_STAGE_REQUIRED`). In our case, publishing from a terminal
