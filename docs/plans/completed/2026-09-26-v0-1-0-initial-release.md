@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; L8b (OIDC-only `release.yml`) added 2026-10-01; L9 in progress — release prep (0.1.0 bump, CHANGELOG) in the L8b PR; consumer validation ✅ 2026-10-01; then the `v0.1.0` tag and the wrap-up
+**Status:** completed 2026-10-01 (L9 ✅ `0.1.0` published from CI with provenance via OIDC). Approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; L8b (OIDC-only `release.yml`) added 2026-10-01; L9 done 2026-10-01 — release prep in the L8b PR, consumer validation ✅, `v0.1.0` published from CI
 
 ## Objective
 
@@ -222,12 +222,13 @@ type SignInResult =
      the maintainer reports the published beta worked in a real consumer app (per-platform and
      logcat detail not recorded). Then merge the PR with CI
      green.
-   - **Publish:** tag `v0.1.0` on the merge commit on `main` and push it. `release.yml` publishes to
-     `latest` with provenance. This is the first real test of OIDC (L8b).
-   - **After the publish (follow-up docs PR, as PR #3 was for L8):** check `npm view
-     expo-native-google-signin dist-tags` (expect `latest: 0.1.0`) and the provenance badge on
-     npmjs.com. Optionally move `next` to `0.1.0`. Then archive this plan, harvest ARCHITECTURE.md,
-     and update progress.md (Definition of done → "Wrapped up").
+   - **Publish:** ✅ done 2026-10-01. `v0.1.0` was tagged on the merge commit on `main` (afb5e4d);
+     `release.yml` published to `latest` with provenance. The first real test of OIDC (L8b): attempt 1
+     failed with `ENEEDAUTH` because the npmjs.com Trusted Publisher entry didn't have "allow publish"
+     ticked; the maintainer ticked it and re-ran, and attempt 2 succeeded.
+   - **After the publish:** ✅ done 2026-10-01. `latest: 0.1.0`, signed provenance and the Sigstore log
+     entry confirmed from the run log; plan archived, ARCHITECTURE.md and progress.md updated. Moving
+     `next` off the beta stays optional (the maintainer's call).
    - **Test strategy:** no code changes. Run `npm run build`/`lint`/`typecheck`/`test`/`test:plugin`.
      Grep that no `0.1.0-beta.0` remains as a *current*-version reference, since history stays. CI
      compiles the example with the bumped Gradle version.
@@ -287,6 +288,6 @@ OIDC-only (L8b)._
   - error codes
   - migration from `@react-native-google-signin/google-signin`
   - "not affiliated with or endorsed by Google"
-- **Published:** `0.1.0` on npm with provenance, and CHANGELOG entry written.
-- **Validated:** the maintainer device test and one real consumer app on both platforms pass.
-- **Wrapped up:** plan archived, progress.md and ARCHITECTURE.md updated.
+- **Published:** ✅ `0.1.0` on npm with provenance, and CHANGELOG entry written.
+- **Validated:** ✅ the maintainer device test and one real consumer app on both platforms pass.
+- **Wrapped up:** ✅ plan archived, progress.md and ARCHITECTURE.md updated.
