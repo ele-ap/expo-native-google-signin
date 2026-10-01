@@ -11,8 +11,7 @@ the SDK. This module talks only to Google's first-party SDKs — no dependency o
 
 ## Status and requirements
 
-- **Pre-1.0 — not published yet.** The first release will be `0.1.0-beta.0`, on the npm `next` tag
-  (see [CHANGELOG.md](./CHANGELOG.md)); the install commands below work once it is out. Per
+- **Pre-1.0 beta.** `0.1.0-beta.0` is on npm (`next` tag; see [CHANGELOG.md](./CHANGELOG.md)). Per
   semver-pre-1.0, a minor bump may break the API — **pin an exact version**:
 
   ```sh
@@ -282,14 +281,12 @@ See `CLAUDE.md` for the full command reference (`npm run build`, `lint`, `typech
    (prereleases go to the `next` dist-tag, stable versions to `latest`), but only if the tag matches
    `package.json`'s version and the tagged commit is on `main`.
 
-**First publish:** npm trusted publishing needs the package to already exist, so the very first
-version is published manually (`npm publish --access public --tag next`), or via an `NPM_TOKEN`
-repository secret.
-
-**After that**, configure npm trusted publishing so `release.yml` doesn't need a token: on
-npmjs.com, package settings → **Trusted Publisher** → GitHub Actions, repo
-`ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. Then delete the
-`NPM_TOKEN` secret.
+**Auth:** `release.yml` is meant to publish through npm trusted publishing (OIDC). Configure it
+before tagging the next release: on npmjs.com, package settings → **Trusted Publisher** → GitHub
+Actions, repo `ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. No token
+is needed after that. The first version (`0.1.0-beta.0`) was
+published manually with 2FA, because npm only lets a 2FA-bypassing token publish to a staging area
+for a package that doesn't exist yet (`E_STAGE_REQUIRED`).
 
 ## Disclaimer
 
