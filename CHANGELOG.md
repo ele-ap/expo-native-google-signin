@@ -8,9 +8,9 @@ may break the API; see `CLAUDE.md` → "Conventions".
 
 ## [Unreleased]
 
-## [0.1.0-beta.0] - TBD
+## [0.1.0-beta.0] - 2026-10-01
 
-<!-- Date filled in by the maintainer at publish time (npm publish --access public --tag next). -->
+First publish, manual (no npm provenance); later versions are published from CI with provenance.
 
 ### Added
 

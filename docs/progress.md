@@ -2,30 +2,31 @@
 
 ## Current phase
 
-**v0.1.0 in preparation — feature-complete on draft PR #1 (Expo SDK 57).** Build, lint, typecheck and Jest work
-locally, and CI compiles the example app natively (Android, plus iOS on Xcode 26). The full
-v0.1 API works end to end: `signIn`/`signOut` on **Android** (Credential Manager) and **iOS**
-(GoogleSignIn), JS validation, the Expo Go error, the `iosUrlScheme` config plugin and an example
-sign-in screen. What's left: publishing (L8) and device validation (L9), both with the maintainer.
+**`0.1.0-beta.0` published to npm on 2026-10-01 (`next` tag; npm also set `latest`, as it does on a
+package's first publish).** Built against Expo SDK 57, and also validated pre-publish in a consumer app
+on Expo SDK 56 (iOS simulator + Android 16 device). CI compiles the example app natively (Android,
+plus iOS on Xcode 26) on every push.
 
 ## Active plan
 
-`docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅, L2b (CI native
-compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅, L6 (`release.yml`) ✅, L7 (docs) ✅ — 2026-09-26; L7b (pre-publish consumer fixes: Android `[16]` → `SIGN_IN_FAILED`, extensionless `main` so the web stub is used under Metro) implemented 2026-10-01, pending CI + merge.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
-where CI compiles Android and iOS on every push. All code and docs for v0.1.0 are done, apart from the L7b fixes awaiting CI and merge. Next step: **L8 — publish
-`0.1.0-beta.0`**, which needs the maintainer: merge PR #1 to `main`, add the CHANGELOG date, then do the
-first publish (manual, or an `NPM_TOKEN` secret + tag `v0.1.0-beta.0`). See README → Contributing /
-releasing.
+`docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1–L7 ✅ (2026-09-26); L7b (pre-publish
+consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.0-beta.0`) ✅ —
+2026-10-01.** The first publish was manual with 2FA: the tag-triggered `release.yml` run failed with
+`E_STAGE_REQUIRED`, because a bypass-2FA token can't create a new package (see ARCHITECTURE.md →
+"Engineering & release").
 
 ## Up next
 
-1. L8 publish `0.1.0-beta.0` (`next` tag) — **needs the maintainer's npm account** (first publish is
-   manual or via an `NPM_TOKEN` secret; trusted publishing is configured after the package exists).
-2. L9 validate in a real consumer app on both platforms → publish `0.1.0` (`latest`).
+1. **Maintainer:** configure npm trusted publishing for `release.yml` (README → Contributing /
+   releasing), then delete the `NPM_TOKEN` secret and the npm token.
+2. L9 — validate the **published** package in a real consumer app on both platforms, then publish
+   `0.1.0` (`latest`) from CI with provenance.
 
 ## Completed
 
-- **2026-10-01 — Pre-publish consumer fixes (L7b), pending CI + merge:** a pre-publish tarball was run
+- **2026-10-01 — Published `0.1.0-beta.0` (L8):** manual first publish with 2FA after the CI run
+  failed with `E_STAGE_REQUIRED`. The tarball has 38 files, including `build/index.web.js`.
+- **2026-10-01 — Pre-publish consumer fixes (L7b), PR #2:** a pre-publish tarball was run
   in a consumer app (Expo SDK 56, iOS simulator + Android 16 device). Fixed Android `[16] Account reauth
   failed` resolving as cancelled (now `SIGN_IN_FAILED` with a hint) and `main` → `build/index` so Metro
   picks `index.web.js` on web.

@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and implemented 2026-10-01 (pending review + CI); next L8 (publish — maintainer)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; next L9 (consumer validation of the published package, then `0.1.0`)
 
 ## Objective
 
@@ -135,7 +135,7 @@ type SignInResult =
 6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
    ✅ done 2026-09-26: the tests landed in L3/L5; `release.yml` (tag-on-main check, OIDC or token, provenance).
 7. **L7 — Docs:** README, CHANGELOG, SECURITY. ✅ done 2026-09-26.
-7b. **L7b — Pre-publish fixes from consumer testing** (added 2026-10-01; implemented 2026-10-01, pending review + CI). A pre-publish tarball
+7b. **L7b — Pre-publish fixes from consumer testing** (added 2026-10-01) ✅ done 2026-10-01 (PR #2: code review APPROVE, CI green incl. the Kotlin unit test). A pre-publish tarball
    of `main` was integrated into a consumer app on **Expo SDK 56** and run on an iOS simulator and
    an Android 16 device. Sign-in, cancel and sign-out/sign-in worked on both platforms, and the
    legacy-API warning was gone. Two bugs were found and must be fixed before the first publish,
@@ -168,7 +168,10 @@ type SignInResult =
    - **CHANGELOG:** both under `[0.1.0-beta.0]` (nothing has been published yet).
    - **Done when:** CI is green (JS, Kotlin unit, Android + iOS example compiles), code-reviewer
      APPROVE, PR merged to `main`.
-8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag).
+8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag). ✅ done 2026-10-01. The tag-triggered
+   `release.yml` run failed with `E_STAGE_REQUIRED` (a bypass-2FA token can't create a new package),
+   so the maintainer published by hand with 2FA from a fresh checkout of the tag (no provenance).
+   Next: configure trusted publishing and delete the token.
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
 
 ## Test strategy

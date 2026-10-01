@@ -109,7 +109,16 @@ each section; superseded decisions are marked, not deleted.
     text.
 
   Auth is npm trusted publishing (OIDC) once the package exists, with an optional `NPM_TOKEN` secret
-  only for the very first publish.
+  only for the very first publish. _(Superseded 2026-10-01 for the first publish: the token fallback
+  failed — see the next bullet.)_
+- **The first publish was manual, with 2FA (2026-10-01).** The `NPM_TOKEN` fallback didn't work for
+  it: a granular token that bypasses 2FA could only publish to a staging area, and npm refused to
+  create a new package that way (`E403 … E_STAGE_REQUIRED`). In our case, publishing from a terminal
+  also required 2FA enabled on the account (`E403 … Two-factor authentication … is required`). So `0.1.0-beta.0` was published by hand (no provenance), and every
+  later version is intended to go through trusted publishing. Don't plan on a bypass-2FA token for publishing:
+  the publish log carried npm's own notice that such tokens "are being restricted for account changes
+  and direct publishing" (https://gh.io/npm-gat-bypass2fa-deprecation). Note: npm also set `latest` to `0.1.0-beta.0`, as it always does on a
+  package's first publish, even with `--tag next`; `0.1.0` will move it.
 - **Built against Expo SDK 57 (2026-09-26).** The module and the example app target SDK 57
   (`expo` 57, React Native 0.86), which was the current SDK when scaffolding. The draft plan said
   SDK 56, but starting on the current SDK postpones the first upgrade. Peer dependencies stay
