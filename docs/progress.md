@@ -7,19 +7,29 @@ package's first publish).** Built against Expo SDK 57, and also validated pre-pu
 on Expo SDK 56 (iOS simulator + Android 16 device). CI compiles the example app natively (Android,
 plus iOS on Xcode 26) on every push.
 
+**The `0.1.0` release is prepared in the PR from this branch** (versions bumped in `package.json`, both
+lockfiles and `android/build.gradle`; CHANGELOG `[0.1.0]`; README status and install pins). It is not
+published yet: it publishes when `v0.1.0` is tagged on `main` after the merge.
+
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1–L7 ✅ (2026-09-26); L7b (pre-publish
 consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.0-beta.0`) ✅ —
 2026-10-01.** The first publish was manual with 2FA: the tag-triggered `release.yml` run failed with
 `E_STAGE_REQUIRED`, because a bypass-2FA token can't create a new package (see ARCHITECTURE.md →
-"Engineering & release"). **L8b (OIDC-only `release.yml`) ✅ 2026-10-01.**
+"Engineering & release"). **L8b (OIDC-only `release.yml`) ✅ 2026-10-01.** **L9 is in progress:**
+release prep is done in the PR; the maintainer's consumer validation, the tag and the post-publish
+wrap-up remain.
 
 ## Up next
 
-1. L9 — validate the **published** package in a real consumer app on both platforms, then publish
-   `0.1.0` (`latest`) from CI with provenance. The `v0.1.0` run is the first real test of OIDC
-   publishing; if it fails with `ENEEDAUTH`, check the npmjs.com Trusted Publisher fields first.
+1. Maintainer: validate the published `0.1.0-beta.0` in a consumer app on both platforms. The package
+   code is identical to `0.1.0`.
+2. Merge the PR with CI green.
+3. Tag `v0.1.0` on `main` and push. This is the first real OIDC publish; if it fails with `ENEEDAUTH`,
+   check the npmjs.com Trusted Publisher fields first.
+4. A follow-up docs PR: verify `latest: 0.1.0` and the provenance badge, archive the plan, and update
+   progress.md and ARCHITECTURE.md.
 
 ## Completed
 

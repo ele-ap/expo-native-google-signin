@@ -11,11 +11,11 @@ the SDK. This module talks only to Google's first-party SDKs — no dependency o
 
 ## Status and requirements
 
-- **Pre-1.0 beta.** `0.1.0-beta.0` is on npm (`next` tag; see [CHANGELOG.md](./CHANGELOG.md)). Per
-  semver-pre-1.0, a minor bump may break the API — **pin an exact version**:
+- **Pre-1.0.** `0.1.0` is on npm (`latest`; see [CHANGELOG.md](./CHANGELOG.md)). Still pre-1.0, so a
+  minor bump may break the API — **pin an exact version**:
 
   ```sh
-  npm install expo-native-google-signin@0.1.0-beta.0 --save-exact
+  npm install expo-native-google-signin@0.1.0 --save-exact
   ```
 
 - **Expo SDK 57.**
@@ -30,7 +30,7 @@ the SDK. This module talks only to Google's first-party SDKs — no dependency o
 ```sh
 npx expo install expo-native-google-signin
 # or, pinned exactly:
-npm install expo-native-google-signin@0.1.0-beta.0 --save-exact
+npm install expo-native-google-signin@0.1.0 --save-exact
 ```
 
 Add the config plugin in `app.json` / `app.config.*`:

@@ -8,6 +8,15 @@ may break the API; see `CLAUDE.md` → "Conventions".
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-01
+
+First stable-tagged release (`latest`), and the first version published from CI with npm provenance
+through trusted publishing. No changes to the package since `0.1.0-beta.0`.
+
+### Changed
+
+- The `latest` dist-tag moves from `0.1.0-beta.0` to `0.1.0`.
+
 ## [0.1.0-beta.0] - 2026-10-01
 
 First publish, manual (no npm provenance); later versions are published from CI with provenance.
@@ -35,5 +44,6 @@ First publish, manual (no npm provenance); later versions are published from CI 
 - Android `minSdk` 24; `androidx.credentials` 1.6.0 + `googleid` 1.2.0.
 - iOS 15.1+; `GoogleSignIn-iOS` ~> 9.2; Xcode 26+ (required by Expo SDK 57 itself).
 
-[Unreleased]: https://github.com/ele-ap/expo-native-google-signin/compare/v0.1.0-beta.0...HEAD
+[Unreleased]: https://github.com/ele-ap/expo-native-google-signin/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/ele-ap/expo-native-google-signin/releases/tag/v0.1.0
 [0.1.0-beta.0]: https://github.com/ele-ap/expo-native-google-signin/releases/tag/v0.1.0-beta.0

@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; L8b (OIDC-only `release.yml`) added 2026-10-01; next L9 (consumer validation of the published package, then `0.1.0`)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; L8b (OIDC-only `release.yml`) added 2026-10-01; L9 in progress — release prep (0.1.0 bump, CHANGELOG) in the L8b PR; then consumer validation, the `v0.1.0` tag and the wrap-up
 
 ## Objective
 
@@ -206,7 +206,29 @@ type SignInResult =
      of the OIDC exchange. If it fails with `ENEEDAUTH`, check the npmjs.com Trusted Publisher
      fields (repo, workflow filename, environment `npm`) first.
    - **Done when:** code-reviewer APPROVE, CI green, pushed. Proven by the `v0.1.0` release run (L9).
-9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
+9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**. Detailed 2026-10-01. The release prep
+   ships in the same PR as L8b. Everything else is done by the maintainer, or after the publish.
+   - **In the PR (release prep):** bump `0.1.0-beta.0` → `0.1.0` in `package.json`,
+     `package-lock.json` (root entries only), `example/package-lock.json` (the `..` entry), and
+     `android/build.gradle` (`version`, `versionName`). The podspec reads `package.json`. Add a
+     CHANGELOG `[0.1.0]` entry: no package changes since `0.1.0-beta.0`; the first version published
+     from CI with npm provenance through trusted publishing; moves `latest` off the beta. Update the
+     compare/tag links. Update the README status and install pins to `0.1.0` (stable on `latest`,
+     still pre-1.0, so keep pinning exact), because the npm README is frozen at publish. Update
+     progress.md.
+   - **Maintainer, before tagging:** validate the **published** `0.1.0-beta.0` in a real consumer app
+     on both platforms (sign in, cancel, sign out; no legacy-API warning in Android logcat). The
+     0.1.0 package code is identical to the beta, so that run covers 0.1.0. Then merge the PR with CI
+     green.
+   - **Publish:** tag `v0.1.0` on the merge commit on `main` and push it. `release.yml` publishes to
+     `latest` with provenance. This is the first real test of OIDC (L8b).
+   - **After the publish (follow-up docs PR, as PR #3 was for L8):** check `npm view
+     expo-native-google-signin dist-tags` (expect `latest: 0.1.0`) and the provenance badge on
+     npmjs.com. Optionally move `next` to `0.1.0`. Then archive this plan, harvest ARCHITECTURE.md,
+     and update progress.md (Definition of done → "Wrapped up").
+   - **Test strategy:** no code changes. Run `npm run build`/`lint`/`typecheck`/`test`/`test:plugin`.
+     Grep that no `0.1.0-beta.0` remains as a *current*-version reference, since history stays. CI
+     compiles the example with the bumped Gradle version.
 
 ## Test strategy
 
