@@ -18,6 +18,27 @@ class ErrorMappingTest {
   }
 
   @Test
+  fun reauthFailedCancellationMapsToSignInFailedAndKeepsTheMessage() {
+    val failure =
+      mapGetCredentialException(GetCredentialCancellationException("[16] Account reauth failed."))
+
+    val coded = failure as SignInFailure.Coded
+    assertEquals(ErrorCodes.SIGN_IN_FAILED, coded.code)
+    assertTrue(coded.message.contains("[16] Account reauth failed"))
+    assertTrue(coded.message.contains("SHA-1"))
+  }
+
+  @Test
+  fun reauthFailedTextWithoutTheBracketedCodeAlsoMapsToSignInFailed() {
+    val failure =
+      mapGetCredentialException(GetCredentialCancellationException("16: Account reauth failed"))
+
+    val coded = failure as SignInFailure.Coded
+    assertEquals(ErrorCodes.SIGN_IN_FAILED, coded.code)
+    assertTrue(coded.message.contains("16: Account reauth failed"))
+  }
+
+  @Test
   fun noCredentialMapsToNoGoogleAccountAndKeepsTheMessage() {
     val failure =
       mapGetCredentialException(NoCredentialException("no Google account on this device"))

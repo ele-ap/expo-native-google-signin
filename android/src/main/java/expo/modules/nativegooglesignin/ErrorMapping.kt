@@ -26,20 +26,44 @@ object ErrorCodes {
  * be covered by a plain JVM unit test -- see `ErrorMappingTest`.
  */
 sealed interface SignInFailure {
-  /** The user dismissed the account chooser; `signIn` should resolve `{ type: 'cancelled' }`. */
+  /**
+   * The user dismissed the account chooser; `signIn` should resolve `{ type: 'cancelled' }`.
+   * Not every [GetCredentialCancellationException] is a dismissal: `[16] Account reauth failed`
+   * (matched on `[16]` or "reauth failed") is a misconfiguration and maps to [Coded] -- see [mapGetCredentialException].
+   */
   object Cancelled : SignInFailure
 
   /** `signIn` should reject with this coded error. */
   data class Coded(val code: String, val message: String) : SignInFailure
 }
 
+private const val REAUTH_FAILED_HINT =
+  " -- this usually means the app's package name + signing SHA-1 aren't registered on an " +
+    "Android OAuth client in the same Google Cloud project as webClientId (register debug, " +
+    "upload and Play app-signing SHA-1s; see README Troubleshooting)."
+
+private fun isReauthFailed(msg: String): Boolean =
+  msg.contains("[16]") || msg.contains("reauth failed", ignoreCase = true)
+
 /**
  * Maps a [GetCredentialException] thrown by `CredentialManager.getCredentialAsync` to a
  * [SignInFailure] -- see docs/ARCHITECTURE.md -> "Public API shape" and the plan's "Native
  * behaviour -> Android -> Error mapping" for the rationale behind each mapping.
+ *
+ * Exception: Google Play services reports `[16] Account reauth failed` -- usually an unregistered
+ * package name + signing SHA-1 -- as a [GetCredentialCancellationException]. That is a real
+ * failure, not a user dismissal, so a cancellation whose message contains `[16]` or "reauth
+ * failed" (case-insensitive, in case a Play services version formats the code differently) maps
+ * to `SIGN_IN_FAILED` (with a hint) instead of [SignInFailure.Cancelled]. Any other cancellation
+ * stays [SignInFailure.Cancelled].
  */
 fun mapGetCredentialException(e: GetCredentialException): SignInFailure = when (e) {
-  is GetCredentialCancellationException -> SignInFailure.Cancelled
+  is GetCredentialCancellationException ->
+    if (isReauthFailed(e.message.orEmpty())) {
+      SignInFailure.Coded(ErrorCodes.SIGN_IN_FAILED, nativeMessage(e) + REAUTH_FAILED_HINT)
+    } else {
+      SignInFailure.Cancelled
+    }
   is NoCredentialException -> SignInFailure.Coded(ErrorCodes.NO_GOOGLE_ACCOUNT, nativeMessage(e))
   is GetCredentialProviderConfigurationException,
   is GetCredentialUnsupportedException ->

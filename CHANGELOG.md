@@ -21,11 +21,13 @@ may break the API; see `CLAUDE.md` → "Conventions".
 - `signOut()` — clears the locally cached credential state on both platforms.
 - `isErrorWithCode` and the shared `ERROR_CODES` (`CONFIGURATION_ERROR`, `NO_GOOGLE_ACCOUNT`,
   `PROVIDER_UNAVAILABLE`, `NO_PRESENTER`, `UNEXPECTED_CREDENTIAL`, `SIGN_IN_FAILED`). A
-  user-initiated cancel resolves `{ type: "cancelled" }` instead of rejecting.
+  user-initiated cancel resolves `{ type: "cancelled" }` instead of rejecting; on Android,
+  `[16] Account reauth failed` (an unregistered package + signing SHA-1) rejects with
+  `SIGN_IN_FAILED` rather than resolving as cancelled.
 - Config plugin option `iosUrlScheme`, appended to `Info.plist`'s `CFBundleURLTypes` for the OAuth
   redirect back into the app.
 - A web stub entry point that throws `CONFIGURATION_ERROR` — there is no web implementation, by
-  design.
+  design (picked up under Metro via an extensionless `main`).
 
 ### Platform requirements
 
