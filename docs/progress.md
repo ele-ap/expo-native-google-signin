@@ -7,23 +7,34 @@ package's first publish).** Built against Expo SDK 57, and also validated pre-pu
 on Expo SDK 56 (iOS simulator + Android 16 device). CI compiles the example app natively (Android,
 plus iOS on Xcode 26) on every push.
 
+**The `0.1.0` release is prepared in the PR from this branch** (versions bumped in `package.json`, both
+lockfiles and `android/build.gradle`; CHANGELOG `[0.1.0]`; README status and install pins). It is not
+published yet: it publishes when `v0.1.0` is tagged on `main` after the merge.
+
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1–L7 ✅ (2026-09-26); L7b (pre-publish
 consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.0-beta.0`) ✅ —
 2026-10-01.** The first publish was manual with 2FA: the tag-triggered `release.yml` run failed with
 `E_STAGE_REQUIRED`, because a bypass-2FA token can't create a new package (see ARCHITECTURE.md →
-"Engineering & release").
+"Engineering & release"). **L8b (OIDC-only `release.yml`) ✅ 2026-10-01.** **L9 is in progress:**
+release prep is done in the PR, and the maintainer validated the published `0.1.0-beta.0` in a
+real consumer app (2026-10-01). The tag and the post-publish wrap-up remain.
 
 ## Up next
 
-1. **Maintainer:** configure npm trusted publishing for `release.yml` (README → Contributing /
-   releasing), then delete the `NPM_TOKEN` secret and the npm token.
-2. L9 — validate the **published** package in a real consumer app on both platforms, then publish
-   `0.1.0` (`latest`) from CI with provenance.
+1. Merge the PR with CI green. (Consumer validation of the published `0.1.0-beta.0` was reported to
+   work on 2026-10-01, and its package code is identical to `0.1.0`.)
+2. Tag `v0.1.0` on `main` and push. This is the first real OIDC publish; if it fails with `ENEEDAUTH`,
+   check the npmjs.com Trusted Publisher fields first.
+3. A follow-up docs PR: verify `latest: 0.1.0` and the provenance badge, archive the plan, and update
+   progress.md and ARCHITECTURE.md.
 
 ## Completed
 
+- **2026-10-01 — Trusted publishing (L8b):** maintainer configured npm trusted publishing and deleted
+  the `NPM_TOKEN` secret and npm token; `release.yml` is now OIDC-only (no `NODE_AUTH_TOKEN`, no
+  `registry-url`). **Unproven until the `0.1.0` tag runs `release.yml`.**
 - **2026-10-01 — Published `0.1.0-beta.0` (L8):** manual first publish with 2FA after the CI run
   failed with `E_STAGE_REQUIRED`. The tarball has 38 files, including `build/index.web.js`.
 - **2026-10-01 — Pre-publish consumer fixes (L7b), PR #2:** a pre-publish tarball was run
@@ -51,7 +62,7 @@ consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.
 - **2026-09-26 — Release workflow (L6):** `release.yml`. A `v*` tag publishes to npm with provenance
   (prereleases → `next`), after the tag/version and tag-on-`main` checks and the JS checks. It runs
   in the `npm` environment, uses no cache, and pins npm 11.20.0. Auth is trusted publishing (OIDC), or
-  an `NPM_TOKEN` for the first publish.
+  an `NPM_TOKEN` for the first publish (token fallback removed in L8b).
 - **2026-09-26 — Docs (L7):** README (requirements, Google Cloud setup with both SHA-1s, API and error
   table, Supabase nonce / Firebase / custom-server examples, migration, troubleshooting, releasing),
   CHANGELOG (`0.1.0-beta.0`, date TBD at publish), SECURITY (GitHub private vulnerability reporting).

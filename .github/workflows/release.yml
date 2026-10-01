@@ -21,7 +21,7 @@ on:
 permissions:
   contents: read
   # Required for npm provenance and for npm's OIDC trusted-publishing
-  # exchange (see the Publish step below).
+  # exchange, the only publish auth (see the Publish step below).
   id-token: write
 
 # Only one release publishes at a time; never cancel one mid-publish.
@@ -37,9 +37,10 @@ jobs:
     name: Publish to npm
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Lets the maintainer attach branch/tag or reviewer protection rules to
-    # an "npm" environment in the repo's settings later. npm trusted
-    # publishing can optionally be scoped to this same environment name.
+    # The npm trusted publisher on npmjs.com is scoped to this environment
+    # name, so renaming or removing it breaks publishing (update npmjs.com
+    # first). Branch/tag or reviewer protection rules can be attached to it
+    # in the repo's settings.
     environment: npm
     steps:
       - name: Checkout
@@ -76,11 +77,19 @@ jobs:
           # No dependency cache here: this is a one-shot release job, not a
           # frequently re-run CI job, so there's little to amortize, and a
           # poisoned/stale cache is one less thing to reason about right
-          # before a publish.
-          # Needed so `actions/setup-node` writes an npmrc auth line for the
-          # NPM_TOKEN fallback (see the Publish step). Harmless when that
-          # secret is unset -- see the Publish step's comment.
-          registry-url: https://registry.npmjs.org
+          # before a publish. `package-manager-cache: false` keeps it off
+          # even if package.json ever gains a `packageManager` field, which
+          # would otherwise turn on setup-node's automatic npm cache.
+          package-manager-cache: false
+          #
+          # Deliberately no `registry-url`. It only writes an .npmrc line
+          # `_authToken=${NODE_AUTH_TOKEN}` for token auth. npm 11.20.0's
+          # `npm publish` uses the default registry and does the OIDC
+          # exchange in memory, so no .npmrc is needed. Keeping the line
+          # without a token would make npm send the literal string
+          # `${NODE_AUTH_TOKEN}` if OIDC failed, instead of failing cleanly
+          # with ENEEDAUTH. Checked against setup-node v7 and npm 11.20.0;
+          # re-check if either pin changes.
 
       - name: Verify tag matches package.json version
         env:
@@ -151,34 +160,14 @@ jobs:
           npm -v
 
       - name: Publish
+        # Auth is npm trusted publishing (OIDC) only. `id-token: write` lets
+        # npm exchange this job's GitHub OIDC token for a short-lived publish
+        # token scoped to this repo + `release.yml` + the `npm` environment
+        # (as configured on npmjs.com). No secret or token exists or is
+        # needed. If the trusted publisher config doesn't match, npm fails
+        # with ENEEDAUTH -- check the npmjs.com Trusted Publisher fields
+        # first. npm logs the OIDC failure reason only at `verbose` level;
+        # to see it, add `--loglevel verbose` to this command and re-run.
         env:
           DIST_TAG: ${{ steps.dist_tag.outputs.tag }}
-          # Two auth modes; this one line covers both without branching:
-          #
-          # (a) npm trusted publishing (OIDC) -- the target once this
-          #     package exists on npm (see README/CHANGELOG for the
-          #     npmjs.com setup). No token needed: `id-token: write` above
-          #     lets npm's own OIDC exchange request a short-lived token
-          #     from npmjs.com for this exact repo + workflow. That exchange
-          #     runs unconditionally on GitHub Actions and builds its own
-          #     request token from the Actions OIDC endpoint -- it does not
-          #     read NODE_AUTH_TOKEN, so it isn't affected by it being
-          #     unset here.
-          #
-          #     If NPM_TOKEN is unset, this evaluates to an empty string,
-          #     and `actions/setup-node`'s registry-url writes that into
-          #     .npmrc as an empty `_authToken`. Read against npm's own
-          #     publish command (lib/commands/publish.js): it treats an
-          #     empty token as falsy ("not logged in"), never as a malformed
-          #     `Authorization: Bearer` header sent to the registry. So if
-          #     OIDC also fails (trusted publisher not configured yet), npm
-          #     fails cleanly with "you must be logged in" instead of
-          #     sending a broken request -- an empty NODE_AUTH_TOKEN cannot
-          #     break the OIDC path.
-          #
-          # (b) An NPM_TOKEN repo secret -- fallback for the very first
-          #     publish, before a package exists on npm for a trusted
-          #     publisher to be registered against. Remove the secret once
-          #     (a) is configured on npmjs.com.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public --tag "$DIST_TAG"

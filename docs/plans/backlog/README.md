@@ -70,7 +70,7 @@ item is scheduled, move it into a real plan under `docs/plans/active/`.
 
 ### 9. Derive the Android Gradle version from `package.json`
 
-- **Why:** `android/build.gradle` hardcodes `version` / `versionName` (`0.1.0-beta.0`), while the iOS
+- **Why:** `android/build.gradle` hardcodes `version` / `versionName`, while the iOS
   podspec reads `package.json`. For now the README's release steps list the Gradle bump as manual.
 - **Action:** read the version from `../package.json` in `build.gradle` (as other Expo modules do) and
   drop the manual step.

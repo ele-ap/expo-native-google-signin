@@ -11,11 +11,11 @@ the SDK. This module talks only to Google's first-party SDKs — no dependency o
 
 ## Status and requirements
 
-- **Pre-1.0 beta.** `0.1.0-beta.0` is on npm (`next` tag; see [CHANGELOG.md](./CHANGELOG.md)). Per
-  semver-pre-1.0, a minor bump may break the API — **pin an exact version**:
+- **Pre-1.0.** `0.1.0` is on npm (`latest`; see [CHANGELOG.md](./CHANGELOG.md)). Still pre-1.0, so a
+  minor bump may break the API — **pin an exact version**:
 
   ```sh
-  npm install expo-native-google-signin@0.1.0-beta.0 --save-exact
+  npm install expo-native-google-signin@0.1.0 --save-exact
   ```
 
 - **Expo SDK 57.**
@@ -30,7 +30,7 @@ the SDK. This module talks only to Google's first-party SDKs — no dependency o
 ```sh
 npx expo install expo-native-google-signin
 # or, pinned exactly:
-npm install expo-native-google-signin@0.1.0-beta.0 --save-exact
+npm install expo-native-google-signin@0.1.0 --save-exact
 ```
 
 Add the config plugin in `app.json` / `app.config.*`:
@@ -281,12 +281,13 @@ See `CLAUDE.md` for the full command reference (`npm run build`, `lint`, `typech
    (prereleases go to the `next` dist-tag, stable versions to `latest`), but only if the tag matches
    `package.json`'s version and the tagged commit is on `main`.
 
-**Auth:** `release.yml` is meant to publish through npm trusted publishing (OIDC). Configure it
-before tagging the next release: on npmjs.com, package settings → **Trusted Publisher** → GitHub
-Actions, repo `ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. No token
-is needed after that. The first version (`0.1.0-beta.0`) was
-published manually with 2FA, because npm only lets a 2FA-bypassing token publish to a staging area
-for a package that doesn't exist yet (`E_STAGE_REQUIRED`).
+**Auth:** `release.yml` publishes only through npm trusted publishing (OIDC), configured on
+npmjs.com: package settings → **Trusted Publisher** → GitHub Actions, repo
+`ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. There is no npm token
+or `NPM_TOKEN` secret, and you shouldn't add one. If you rename the workflow file or the environment,
+update the npmjs.com config too, or publishing fails with `ENEEDAUTH`. The first version
+(`0.1.0-beta.0`) was published manually with 2FA, because npm only lets a 2FA-bypassing token
+publish to a staging area for a package that doesn't exist yet (`E_STAGE_REQUIRED`).
 
 ## Disclaimer
 

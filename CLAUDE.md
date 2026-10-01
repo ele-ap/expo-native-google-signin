@@ -110,7 +110,10 @@ Example app — from `example/`:
   mechanics). Re-check this whenever the `GoogleSignIn` version changes.
 - **Workflows: never put `${{ ... }}` inside a `run:` script.** Pass values through `env:` and use
   quoted shell variables. Ref and tag names are attacker-controlled text. `release.yml` also must keep:
-  the tag-on-`main` check, no cache, `persist-credentials: false`, and an exactly pinned npm version.
+  the tag-on-`main` check, no cache (`package-manager-cache: false`), `persist-credentials: false`, and an
+  exactly pinned npm version. Its npm auth is trusted publishing (OIDC) only: no `NODE_AUTH_TOKEN`, no
+  `NPM_TOKEN` secret, no setup-node `registry-url`. The npmjs.com trusted publisher is bound to the
+  `release.yml` filename and the `npm` environment, so don't rename either without updating npmjs.com.
 - **Only import packages this module declares.** The package peers on `expo`, `react` and
   `react-native`. Import from `expo` (e.g. `requireOptionalNativeModule`) or `expo/config-plugins`, never
   bare `expo-modules-core` or `@expo/config-plugins`. npm hoisting hides the mistake, but pnpm and
