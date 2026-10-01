@@ -11,8 +11,8 @@ sign-in screen. What's left: publishing (L8) and device validation (L9), both wi
 ## Active plan
 
 `docs/plans/active/2026-09-26-v0-1-0-initial-release.md` — **L1 ✅, L2 (scaffold) ✅, L2b (CI native
-compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅, L6 (`release.yml`) ✅, L7 (docs) ✅ — 2026-09-26.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
-where CI compiles Android and iOS on every push. All code and docs for v0.1.0 are done. Next step: **L8 — publish
+compiles, pulled forward) ✅, L3 (Android) ✅, L4 (iOS) ✅, L5 (JS + plugin) ✅, L6 (`release.yml`) ✅, L7 (docs) ✅ — 2026-09-26; L7b (pre-publish consumer fixes: Android `[16]` → `SIGN_IN_FAILED`, extensionless `main` so the web stub is used under Metro) implemented 2026-10-01, pending CI + merge.** Work happens on draft PR ele-ap/expo-native-google-signin#1,
+where CI compiles Android and iOS on every push. All code and docs for v0.1.0 are done, apart from the L7b fixes awaiting CI and merge. Next step: **L8 — publish
 `0.1.0-beta.0`**, which needs the maintainer: merge PR #1 to `main`, add the CHANGELOG date, then do the
 first publish (manual, or an `NPM_TOKEN` secret + tag `v0.1.0-beta.0`). See README → Contributing /
 releasing.
@@ -24,6 +24,11 @@ releasing.
 2. L9 validate in a real consumer app on both platforms → publish `0.1.0` (`latest`).
 
 ## Completed
+
+- **2026-10-01 — Pre-publish consumer fixes (L7b), pending CI + merge:** a pre-publish tarball was run
+  in a consumer app (Expo SDK 56, iOS simulator + Android 16 device). Fixed Android `[16] Account reauth
+  failed` resolving as cancelled (now `SIGN_IN_FAILED` with a hint) and `main` → `build/index` so Metro
+  picks `index.web.js` on web.
 
 - **2026-09-26 — Bootstrap (L1):** public repo `ele-ap/expo-native-google-signin` (MIT), AI-development docs, subagents and commands.
 - **2026-09-26 — Scaffold (L2):** Expo module on SDK 57 (`expo-module-scripts` tooling), JS types and

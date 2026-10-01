@@ -166,7 +166,7 @@ always preserved on `error.message` for logging.
 | `PROVIDER_UNAVAILABLE`  | The credential provider isn't configured or supported on the device (e.g. no Play services, or an emulator without a Play Store image)     | Android only |
 | `NO_PRESENTER`          | No current Activity (Android) / view controller (iOS) to present the sign-in UI from — e.g. the app was backgrounded mid-tap               | Both |
 | `UNEXPECTED_CREDENTIAL` | The returned credential isn't a parseable Google ID token credential, or is missing a required field (e.g. no email/profile on iOS)         | Both |
-| `SIGN_IN_FAILED`        | Any other failure. **On iOS, every non-cancel failure uses this one code** — `GoogleSignIn` has a single flat error domain that doesn't distinguish "no account" or "provider unavailable" the way Android's Credential Manager does. The native domain, code and message are always kept in `error.message`. | Both |
+| `SIGN_IN_FAILED`        | Any other failure. **On iOS, every non-cancel failure uses this one code** — `GoogleSignIn` has a single flat error domain that doesn't distinguish "no account" or "provider unavailable" the way Android's Credential Manager does. The native domain, code and message are always kept in `error.message`. **On Android, `[16] Account reauth failed` (an unregistered package + signing SHA-1) rejects with `SIGN_IN_FAILED` rather than resolving as cancelled.** | Both |
 
 ## Backends
 
@@ -245,6 +245,10 @@ product (see `docs/ARCHITECTURE.md` → "Why this project exists").
 
 - **`NO_GOOGLE_ACCOUNT` only on builds installed from Google Play:** the Android OAuth client is
   missing the Play app-signing SHA-1 (see the warning above) — register both SHA-1s.
+- **`SIGN_IN_FAILED` with `[16] Account reauth failed` on Android:** the Android OAuth client is
+  missing this build's signing SHA-1 (debug, upload or Play app-signing). An Android OAuth client
+  holds one SHA-1, so register one client per key, with the same package name, in the same Google
+  Cloud project as `webClientId`.
 - **No accounts on an emulator:** use an emulator image that includes the Play Store, and sign into
   a Google account on it first.
 - **`CONFIGURATION_ERROR` in Expo Go:** this module requires a development build; Expo Go can't load

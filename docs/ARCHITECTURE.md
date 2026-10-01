@@ -79,11 +79,22 @@ each section; superseded decisions are marked, not deleted.
   `CONFIGURATION_ERROR` (iOS also requires `iosClientId`) are produced on both platforms.
 - **No web implementation.** Web is better served by the auth provider's OAuth redirect; the web entry
   throws `CONFIGURATION_ERROR` with that guidance so importing the package never breaks a web bundle.
+- **Android `[16] Account reauth failed` is a failure, not a cancel (2026-10-01).** Google Play services
+  reports it as a `GetCredentialCancellationException` (usually an unregistered package + SHA-1), so
+  `ErrorMapping.kt` maps a cancellation whose message contains `[16]` or "reauth failed"
+  (case-insensitive, in case Play services formats the code differently) to `SIGN_IN_FAILED` with a
+  hint; every other cancellation still resolves `{ type: 'cancelled' }`. No automatic retry. The message
+  string is from logcat and public reports, not verified against Google's source.
 
 ## Engineering & release (2026-09-26)
 
 - **Native code is compiled in CI on every PR** by building the example app (Gradle on ubuntu, Xcode on
   macOS) — the only reliable proof, since local/cloud sessions may lack Google Maven or Xcode.
+- **`package.json` `main` is extensionless (`build/index`) (2026-10-01).** Metro resolves a `main` with an
+  explicit extension literally, so with `build/index.js` the web bundle got the native entry and
+  `index.web.js` was never picked. An extensionless `main` lets Metro apply platform extensions
+  (`index.web.js` on web; native matches no `.ios`/`.android`/`.native` file and falls back to
+  `index.js`). Node's resolution of an extensionless `main` is unaffected. Found by consumer testing.
 - **Releases are published from CI with npm provenance**; consumers are told to pin exact versions.
 - **MIT license**, matching the React Native / Expo ecosystem.
 - **`release.yml` is locked down (2026-09-26).** Pushing a `v*` tag publishes to npm with provenance:

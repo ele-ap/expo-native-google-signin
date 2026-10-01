@@ -2,7 +2,7 @@
   "name": "expo-native-google-signin",
   "version": "0.1.0-beta.0",
   "description": "Native Google Sign-In for Expo apps using Android Credential Manager and the iOS GoogleSignIn SDK — no legacy play-services-auth, no @react-native-google-signin/google-signin dependency.",
-  "main": "build/index.js",
+  "main": "build/index",
   "types": "build/index.d.ts",
   "files": [
     "build",

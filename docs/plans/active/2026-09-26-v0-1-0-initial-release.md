@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; next L8 (publish — maintainer)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and implemented 2026-10-01 (pending review + CI); next L8 (publish — maintainer)
 
 ## Objective
 
@@ -135,6 +135,39 @@ type SignInResult =
 6. **L6 — Tests + release CI.** The remaining Jest and plugin tests, the Kotlin unit test, and `release.yml`.
    ✅ done 2026-09-26: the tests landed in L3/L5; `release.yml` (tag-on-main check, OIDC or token, provenance).
 7. **L7 — Docs:** README, CHANGELOG, SECURITY. ✅ done 2026-09-26.
+7b. **L7b — Pre-publish fixes from consumer testing** (added 2026-10-01; implemented 2026-10-01, pending review + CI). A pre-publish tarball
+   of `main` was integrated into a consumer app on **Expo SDK 56** and run on an iOS simulator and
+   an Android 16 device. Sign-in, cancel and sign-out/sign-in worked on both platforms, and the
+   legacy-API warning was gone. Two bugs were found and must be fixed before the first publish,
+   because a published version number can never be reused:
+   - **A — Android: `[16] Account reauth failed` resolves as `cancelled`.** Google Play services
+     reports this failure as a `GetCredentialCancellationException` with the message
+     `[16] Account reauth failed`. The usual cause is that the app's signing SHA-1 + package isn't
+     registered on an Android OAuth client. `mapGetCredentialException` maps every cancellation to
+     `Cancelled`, so the consumer showed **no error at all** — against the key decision "real
+     failures reject with a coded error". Reproduced on-device: the old wrapper showed
+     `DEVELOPER_ERROR` for the same misconfiguration.
+     **Fix:** in `ErrorMapping.kt`, a `GetCredentialCancellationException` whose message contains
+     `[16]` or "reauth failed" (case-insensitive) maps to `Coded(SIGN_IN_FAILED, …)`, with the native message plus a hint to check the
+     Android OAuth client's package name + SHA-1 (debug, upload and Play app-signing keys). Other
+     cancellations stay `Cancelled`. No automatic retry: one public report calls `[16]` transient,
+     but on the test device it wasn't, and a retry adds state to reason about. **Tests:** two new
+     `ErrorMappingTest` cases (`[16]` → `SIGN_IN_FAILED` keeping the message and the hint; the
+     text-only `16: Account reauth failed` variant); the existing `cancellationMapsToCancelled`
+     covers the plain-cancel branch. **Docs:** the README error table and Troubleshooting entry.
+     **Unverified on-device:** the exception message string comes from logcat plus public reports.
+     The consumer's misconfiguration was fixed before a patched build existed.
+   - **B — Web: `index.web.ts` is dead under Metro.** `"main": "build/index.js"` has an explicit
+     extension, so Metro resolves it literally and the web bundle gets the native entry. The web
+     stub never runs. **Fix:** `"main": "build/index"` (extensionless), so Metro applies its
+     platform resolution (`index.web.js` on web; on native nothing matches `.ios`/`.android`/
+     `.native`, so it falls back to `index.js`). **Verified** by editing the installed package in
+     the consumer and re-exporting web: the stub's text is present and the native entry's is gone.
+     Node resolution of an extensionless `main` is unaffected (`LOAD_AS_FILE` appends `.js`).
+     **Docs:** an ARCHITECTURE.md bullet on why `main` has no extension.
+   - **CHANGELOG:** both under `[0.1.0-beta.0]` (nothing has been published yet).
+   - **Done when:** CI is green (JS, Kotlin unit, Android + iOS example compiles), code-reviewer
+     APPROVE, PR merged to `main`.
 8. **L8 — Publish `0.1.0-beta.0` to npm** (`next` tag).
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
 
