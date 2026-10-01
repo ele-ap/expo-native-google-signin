@@ -108,9 +108,15 @@ each section; superseded decisions are marked, not deleted.
   - No `${{ }}` expression appears inside a `run:` script, because tag names are attacker-controlled
     text.
 
-  Auth is npm trusted publishing (OIDC) once the package exists, with an optional `NPM_TOKEN` secret
-  only for the very first publish. _(Superseded 2026-10-01 for the first publish: the token fallback
-  failed — see the next bullet.)_
+  **Auth is npm trusted publishing (OIDC) only (2026-10-01).** The maintainer configured a trusted
+  publisher on npmjs.com for `release.yml` and the `npm` environment, then deleted the `NPM_TOKEN`
+  secret and the npm token. The workflow carries no token (`NODE_AUTH_TOKEN` is gone), and renaming
+  `release.yml` or the `npm` environment breaks publishing until npmjs.com is updated. `registry-url`
+  was also removed from `actions/setup-node`: it only writes an `.npmrc` `_authToken=${NODE_AUTH_TOKEN}`
+  line for token auth, while npm 11.20.0's `npm publish` uses the default registry and does the OIDC
+  exchange in memory. Leaving it in without a token would make npm send the literal `${NODE_AUTH_TOKEN}`
+  string if OIDC failed, instead of failing cleanly with `ENEEDAUTH`. Checked against setup-node v7 and
+  npm 11.20.0; re-check if either pin changes. **Unproven until the `v0.1.0` tag runs `release.yml`.**
 - **The first publish was manual, with 2FA (2026-10-01).** The `NPM_TOKEN` fallback didn't work for
   it: a granular token that bypasses 2FA could only publish to a staging area, and npm refused to
   create a new package that way (`E403 … E_STAGE_REQUIRED`). In our case, publishing from a terminal

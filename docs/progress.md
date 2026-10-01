@@ -13,17 +13,19 @@ plus iOS on Xcode 26) on every push.
 consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.0-beta.0`) ✅ —
 2026-10-01.** The first publish was manual with 2FA: the tag-triggered `release.yml` run failed with
 `E_STAGE_REQUIRED`, because a bypass-2FA token can't create a new package (see ARCHITECTURE.md →
-"Engineering & release").
+"Engineering & release"). **L8b (OIDC-only `release.yml`) ✅ 2026-10-01.**
 
 ## Up next
 
-1. **Maintainer:** configure npm trusted publishing for `release.yml` (README → Contributing /
-   releasing), then delete the `NPM_TOKEN` secret and the npm token.
-2. L9 — validate the **published** package in a real consumer app on both platforms, then publish
-   `0.1.0` (`latest`) from CI with provenance.
+1. L9 — validate the **published** package in a real consumer app on both platforms, then publish
+   `0.1.0` (`latest`) from CI with provenance. The `v0.1.0` run is the first real test of OIDC
+   publishing; if it fails with `ENEEDAUTH`, check the npmjs.com Trusted Publisher fields first.
 
 ## Completed
 
+- **2026-10-01 — Trusted publishing (L8b):** maintainer configured npm trusted publishing and deleted
+  the `NPM_TOKEN` secret and npm token; `release.yml` is now OIDC-only (no `NODE_AUTH_TOKEN`, no
+  `registry-url`). **Unproven until the `0.1.0` tag runs `release.yml`.**
 - **2026-10-01 — Published `0.1.0-beta.0` (L8):** manual first publish with 2FA after the CI run
   failed with `E_STAGE_REQUIRED`. The tarball has 38 files, including `build/index.web.js`.
 - **2026-10-01 — Pre-publish consumer fixes (L7b), PR #2:** a pre-publish tarball was run
@@ -51,7 +53,7 @@ consumer fixes, PR ele-ap/expo-native-google-signin#2) ✅ and L8 (publish `0.1.
 - **2026-09-26 — Release workflow (L6):** `release.yml`. A `v*` tag publishes to npm with provenance
   (prereleases → `next`), after the tag/version and tag-on-`main` checks and the JS checks. It runs
   in the `npm` environment, uses no cache, and pins npm 11.20.0. Auth is trusted publishing (OIDC), or
-  an `NPM_TOKEN` for the first publish.
+  an `NPM_TOKEN` for the first publish (token fallback removed in L8b).
 - **2026-09-26 — Docs (L7):** README (requirements, Google Cloud setup with both SHA-1s, API and error
   table, Supabase nonce / Firebase / custom-server examples, migration, troubleshooting, releasing),
   CHANGELOG (`0.1.0-beta.0`, date TBD at publish), SECURITY (GitHub private vulnerability reporting).

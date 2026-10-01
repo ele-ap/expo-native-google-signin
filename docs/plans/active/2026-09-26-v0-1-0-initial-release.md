@@ -1,7 +1,7 @@
 # expo-native-google-signin v0.1.0 — initial release
 
 **Created:** 2026-09-26
-**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; next L9 (consumer validation of the published package, then `0.1.0`)
+**Status:** approved 2026-09-26 — L1 (bootstrap) and L2 (scaffold, SDK 57) done; L2b (CI pulled forward), L3 (Android), L4 (iOS), L5 (JS + plugin), L6 (`release.yml`) and L7 (docs) done; L7b (pre-publish consumer fixes) added 2026-10-01 and done 2026-10-01 (PR #2); L8 (publish) done 2026-10-01; L8b (OIDC-only `release.yml`) added 2026-10-01; next L9 (consumer validation of the published package, then `0.1.0`)
 
 ## Objective
 
@@ -172,6 +172,40 @@ type SignInResult =
    `release.yml` run failed with `E_STAGE_REQUIRED` (a bypass-2FA token can't create a new package),
    so the maintainer published by hand with 2FA from a fresh checkout of the tag (no provenance).
    Next: configure trusted publishing and delete the token.
+8b. **L8b — Make OIDC the only auth path in `release.yml`** (added 2026-10-01). The maintainer
+   configured npm trusted publishing (repo `ele-ap/expo-native-google-signin`, workflow
+   `release.yml`, environment `npm`) and deleted the `NPM_TOKEN` secret and the npm token on
+   2026-10-01. The workflow still carries the token fallback, which is now dead code.
+   - **`release.yml`:** drop `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` from the Publish step and
+     rewrite its comment to describe trusted publishing only. **Remove `registry-url`** from the
+     setup-node step and replace its comment with the reasoning, checked against the pinned sources:
+     - `actions/setup-node@v7` (`src/authutil.ts`): `registry-url` only writes
+       `$RUNNER_TEMP/.npmrc` with `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` plus
+       `registry=`, and exports `NPM_CONFIG_USERCONFIG`. It has no part in OIDC. v7 also no longer
+       exports a placeholder `NODE_AUTH_TOKEN`.
+     - npm 11.20.0 (`lib/commands/publish.js` → `lib/utils/oidc.js`): `npm publish` picks the
+       registry (built-in default `https://registry.npmjs.org/`), runs the OIDC exchange, and sets
+       the returned token in memory for that registry before checking credentials. No `.npmrc` is
+       read or written.
+     - Kept without a token, the `.npmrc` line is a trap: npm's `env-replace` leaves an undefined
+       `${NODE_AUTH_TOKEN}` as the literal string, so if OIDC failed npm would send that string as a
+       Bearer token and fail with a confusing registry error. Without the line, npm fails cleanly
+       with `ENEEDAUTH` ("requires you to be logged in").
+     - Keep `id-token: write`, `environment: npm`, `--provenance` (explicit, although npm 11.20.0
+       turns it on under OIDC for a public repo anyway), and the Pin npm step. Keep every CLAUDE.md
+       workflow rule: no `${{ }}` in `run:`, the tag-on-`main` check, no cache (the root
+       `package.json` has no `packageManager`/`devEngines`; `package-manager-cache: false` is added
+       anyway so setup-node's automatic cache can't switch on later), `persist-credentials: false`, and npm pinned exactly.
+   - **Docs:** ARCHITECTURE.md → "Engineering & release" (OIDC only, why `registry-url` is gone),
+     README → Auth (trusted publishing is configured, there is no token), progress.md (state +
+     "unproven until the `0.1.0` tag runs `release.yml`"). No CHANGELOG entry, because nothing in
+     the published package changes.
+   - **Test strategy:** no code or tests change. Parse the workflow YAML and grep that `NPM_TOKEN`,
+     `NODE_AUTH_TOKEN` and `registry-url` are gone from `release.yml`, and that no `run:` holds
+     `${{`. **Unproven until the `0.1.0` tag runs `release.yml`.** That run is the only real test
+     of the OIDC exchange. If it fails with `ENEEDAUTH`, check the npmjs.com Trusted Publisher
+     fields (repo, workflow filename, environment `npm`) first.
+   - **Done when:** code-reviewer APPROVE, CI green, pushed. Proven by the `v0.1.0` release run (L9).
 9. **L9 — Consumer validation**, then **`0.1.0` (`latest`)**.
 
 ## Test strategy
@@ -208,6 +242,9 @@ type SignInResult =
   npm provenance.
 
 ## Publishing (needs your npm account)
+
+_Done: first publish manual (L8); trusted publishing configured and token deleted, `release.yml`
+OIDC-only (L8b)._
 
 - **First publish:** npm trusted publishing needs an existing package, so `0.1.0-beta.0` goes out
   manually by you (`npm publish --access public --tag next`) or via an `NPM_TOKEN` repo secret you
