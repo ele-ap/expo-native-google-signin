@@ -116,7 +116,12 @@ each section; superseded decisions are marked, not deleted.
   line for token auth, while npm 11.20.0's `npm publish` uses the default registry and does the OIDC
   exchange in memory. Leaving it in without a token would make npm send the literal `${NODE_AUTH_TOKEN}`
   string if OIDC failed, instead of failing cleanly with `ENEEDAUTH`. Checked against setup-node v7 and
-  npm 11.20.0; re-check if either pin changes. **Unproven until the `v0.1.0` tag runs `release.yml`.**
+  npm 11.20.0; re-check if either pin changes. **Proven by `v0.1.0` (2026-10-01):** the first OIDC publish went
+  out with signed provenance and a Sigstore transparency-log entry.
+- **Gotcha: the npmjs.com Trusted Publisher entry must have publishing allowed (2026-10-01).** Its
+  "allow publish" checkbox must be ticked. The first `v0.1.0` run failed with `ENEEDAUTH` while it was
+  unticked; ticking it and re-running the job fixed it. (Not confirmed at `--loglevel verbose`, but
+  npm's OIDC code logs a failed exchange only at verbose level and then reports `ENEEDAUTH`.)
 - **The first publish was manual, with 2FA (2026-10-01).** The `NPM_TOKEN` fallback didn't work for
   it: a granular token that bypasses 2FA could only publish to a staging area, and npm refused to
   create a new package that way (`E403 … E_STAGE_REQUIRED`). In our case, publishing from a terminal
@@ -124,7 +129,8 @@ each section; superseded decisions are marked, not deleted.
   later version is intended to go through trusted publishing. Don't plan on a bypass-2FA token for publishing:
   the publish log carried npm's own notice that such tokens "are being restricted for account changes
   and direct publishing" (https://gh.io/npm-gat-bypass2fa-deprecation). Note: npm also set `latest` to `0.1.0-beta.0`, as it always does on a
-  package's first publish, even with `--tag next`; `0.1.0` will move it.
+  package's first publish, even with `--tag next`; `0.1.0` moved `latest` (2026-10-01), and `next`
+  still points at the beta unless the maintainer moves it.
 - **Built against Expo SDK 57 (2026-09-26).** The module and the example app target SDK 57
   (`expo` 57, React Native 0.86), which was the current SDK when scaffolding. The draft plan said
   SDK 56, but starting on the current SDK postpones the first upgrade. Peer dependencies stay

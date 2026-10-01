@@ -114,6 +114,7 @@ Example app — from `example/`:
   exactly pinned npm version. Its npm auth is trusted publishing (OIDC) only: no `NODE_AUTH_TOKEN`, no
   `NPM_TOKEN` secret, no setup-node `registry-url`. The npmjs.com trusted publisher is bound to the
   `release.yml` filename and the `npm` environment, so don't rename either without updating npmjs.com.
+  Its "allow publish" option must stay enabled: with it unticked, the `v0.1.0` release failed with `ENEEDAUTH`.
 - **Only import packages this module declares.** The package peers on `expo`, `react` and
   `react-native`. Import from `expo` (e.g. `requireOptionalNativeModule`) or `expo/config-plugins`, never
   bare `expo-modules-core` or `@expo/config-plugins`. npm hoisting hides the mistake, but pnpm and

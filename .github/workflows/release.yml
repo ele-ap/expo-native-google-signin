@@ -166,8 +166,9 @@ jobs:
         # (as configured on npmjs.com). No secret or token exists or is
         # needed. If the trusted publisher config doesn't match, npm fails
         # with ENEEDAUTH -- check the npmjs.com Trusted Publisher fields
-        # first. npm logs the OIDC failure reason only at `verbose` level;
-        # to see it, add `--loglevel verbose` to this command and re-run.
+        # first (including that publishing is allowed). npm logs the OIDC
+        # failure reason only at `verbose` level; to see it, add
+        # `--loglevel verbose` to this command and re-run.
         env:
           DIST_TAG: ${{ steps.dist_tag.outputs.tag }}
         run: npm publish --provenance --access public --tag "$DIST_TAG"

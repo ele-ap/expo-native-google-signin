@@ -285,9 +285,11 @@ See `CLAUDE.md` for the full command reference (`npm run build`, `lint`, `typech
 npmjs.com: package settings → **Trusted Publisher** → GitHub Actions, repo
 `ele-ap/expo-native-google-signin`, workflow `release.yml`, environment `npm`. There is no npm token
 or `NPM_TOKEN` secret, and you shouldn't add one. If you rename the workflow file or the environment,
-update the npmjs.com config too, or publishing fails with `ENEEDAUTH`. The first version
-(`0.1.0-beta.0`) was published manually with 2FA, because npm only lets a 2FA-bypassing token
-publish to a staging area for a package that doesn't exist yet (`E_STAGE_REQUIRED`).
+update the npmjs.com config too, or publishing fails with `ENEEDAUTH`. The Trusted Publisher entry
+must also have publishing allowed (its "allow publish" checkbox), or `npm publish` fails the same
+way. The first version (`0.1.0-beta.0`) was published manually with 2FA, because npm only lets a
+2FA-bypassing token publish to a staging area for a package that doesn't exist yet
+(`E_STAGE_REQUIRED`).
 
 ## Disclaimer
 
